@@ -186,6 +186,26 @@ def replace_c_class_names(paths, src, dest, inplace=True):
             fp.write(contents)
 
 
+def replace_py_class_names(paths, src, dest, inplace=True):
+    src_with_underscores = re.sub('\.', '_', src)
+    dest_with_underscores = re.sub('\.', '_', dest)
+    subs = (
+        (src_with_underscores, dest_with_underscores),
+        (src, dest),
+    )
+
+    for path in paths:
+        contents = substitute_patterns_in_file(subs, path)
+        if not inplace:
+            old_class = src_with_underscores.split('_')[-1]
+            new_class = dest_with_underscores.split('_')[-1]
+            path = re.sub(old_class, new_class,
+                          os.path.basename(path))
+            print '%s -> %s in %s = %s' % (old_class, new_class, os.path.basename(path), path)
+        with open(path, 'w') as fp:
+            fp.write(contents)
+
+
 def replace_cxx_class_names(paths, src, dest, inplace=True):
     src_with_underscores = re.sub('\.', '_', src)
     dest_with_underscores = re.sub('\.', '_', dest)
@@ -238,6 +258,14 @@ def dup_c_impl(path, new, destdir='.'):
 
 def dup_py_impl(path, new, destdir='.'):
     old = os.path.basename(path)
+
+    impl_files = (glob.glob(os.path.join(path, '*.py')) +
+                  glob.glob(os.path.join(path, 'make.*.user')))
+
+    with cd(os.path.join(destdir, new)) as _:
+        replace_py_class_names(impl_files, old, new, inplace=False)
+
+    return os.path.join(destdir, new)
 
     #impl_files = (glob.glob(os.path.join(path, '*.[ch]')) +
     #              glob.glob(os.path.join(path, 'make.*.user')))
