@@ -14,6 +14,15 @@ from distutils.dir_util import mkpath
 from .utils import cd, mktemp, which, system, check_output
 
 
+_THIS_DIR = os.path.dirname(__file__)
+_PATH_TO_IMPL = {
+    'c': os.path.join(_THIS_DIR, 'data', 'csdms.examples.c.Heat'),
+    'cxx': os.path.join(_THIS_DIR, 'data', 'csdms.examples.cxx.Heat'),
+    'f90': os.path.join(_THIS_DIR, 'data', 'csdms.examples.f90.Heat'),
+    'python': os.path.join(_THIS_DIR, 'data', 'csdms.examples.py.Heat'),
+}
+
+
 class Error(Exception):
     pass
 
@@ -83,35 +92,25 @@ class Bocca(object):
                          pkg_config_package=None, impl=None):
         bmi_mapping = bmi_mapping or {}
 
-        if pkg_config_package:
-            bmi_mapping.setdefault('cflags', pkg_config(pkg_config_package, '--cflags'))
-            bmi_mapping.setdefault('libs', pkg_config(pkg_config_package, '--libs'))
+        kwds = dict(implements='csdms.core.Bmi', language=language)
+        if impl is None:
+            self.create_class(name, **kwds)
+        else:
+            with mktemp(prefix='csdms', suffix='.d') as destdir:
+                kwds['impl'] = make_impl_dir(name, language, subs=bmi_mapping)
+                self.create_class(name, **kwds)
 
-        bmi_mapping.setdefault('includes', '')
-        if not isinstance(bmi_mapping['includes'], types.StringTypes):
-            bmi_mapping['includes'] = os.linesep.join(bmi_mapping['includes'])
 
-        bmi_mapping.setdefault('prefix', '')
-        try:
-            bmi_mapping['defines'] = get_grid_type_defines(bmi_mapping['grids'])
-        except KeyError:
-            bmi_mapping['defines'] = ''
+def make_impl_dir(name, language, subs=None, destdir='.'):
+    subs = subs or {}
 
-        for key in bmi_mapping.keys():
-            bmi_mapping['bmi_' + key] = bmi_mapping[key]
+    src_impls = _PATH_TO_IMPL[language]
 
-        with mktemp(prefix='csdms', suffix='.d') as destdir:
-            #impl_dir = dup_c_impl(impl, name, destdir=destdir)
-            if impl is not None:
-                impl_dir = dup_impl_files(impl, name, destdir=destdir,
-                                         language=language)
-                replace_bmi_names(glob.glob(os.path.join(impl_dir, '*')),
-                                  bmi_mapping)
-            else:
-                impl_dir = None
+    impl_dir = dup_impl_files(src_impls, name, destdir=destdir,
+                              language=language)
+    replace_bmi_names(glob.glob(os.path.join(impl_dir, '*')), subs)
 
-            self.create_class(name, implements='csdms.core.Bmi',
-                              language=language, impl=impl_dir)
+    return impl_dir
 
 
 def is_bocca_project(name):
@@ -379,13 +378,50 @@ def get_grid_type_defines(grid_types):
     return os.linesep.join(defines)
 
 
-_THIS_DIR = os.path.dirname(__file__)
-_PATH_TO_IMPL = {
-    'c': os.path.join(_THIS_DIR, 'data', 'csdms.examples.c.Heat'),
-    'cxx': os.path.join(_THIS_DIR, 'data', 'csdms.examples.cxx.Heat'),
-    'f90': os.path.join(_THIS_DIR, 'data', 'csdms.examples.f90.Heat'),
-    'python': os.path.join(_THIS_DIR, 'data', 'csdms.examples.py.Heat'),
-}
+def get_interfaces(proj):
+    interfaces = {}
+    for interface in proj.get('interfaces', []):
+        name = interface.pop('name')
+        interfaces[name] = interface
+
+    return interfaces
+
+
+def render_include_block(includes):
+    if not isinstance(includes, types.StringTypes):
+        return os.linesep.join(includes)
+    return includes
+
+
+def get_bmis(proj):
+    bmis = {}
+    for bmi in proj.get('bmi', []):
+        language = bmi.pop('language')
+        name = bmi.pop('name')
+        impl = bmi.pop('impl', _PATH_TO_IMPL[language])
+
+        if language in ['c', 'cxx']:
+            mapping = {
+                'bmi_includes': render_include_block(bmi.get('includes', '')),
+                'bmi_register': bmi['register'],
+                'bmi_libs': bmi.get('libs', ''),
+                'bmi_cflags': bmi.get('cflags', ''),
+            }
+        elif language in ['python', 'py']:
+            mapping = {
+                'bmi_package': bmi['package'],
+                'bmi_class': bmi['class'],
+            }
+        else:
+            mapping = {}
+
+        bmis[name] = {
+            'language': language,
+            'impl': impl,
+            'bmi_mapping': mapping,
+        }
+
+    return bmis
 
 
 def make_project(proj, clobber=False):
@@ -394,16 +430,16 @@ def make_project(proj, clobber=False):
     else:
         ifexists = 'raise'
 
+    interfaces = get_interfaces(proj)
+    bmis = get_bmis(proj)
+
     bocca = Bocca()
     bocca.create_project(proj['name'], language=proj['language'],
                          ifexists=ifexists)
+
     with cd(proj['name']) as path:
-        for interface in proj.get('interfaces', []):
-            name = interface.pop('name')
+        for name, interface in interfaces.items():
             bocca.create_interface(name, **interface)
 
-        for clazz in proj.get('bmi', []):
-            name = 'csdms.%s' % clazz.pop('name')
-            clazz.setdefault('impl', _PATH_TO_IMPL[clazz['language']])
-            bocca.create_bmi_class(name, bmi_mapping=clazz, impl=clazz['impl'],
-                                   language=clazz['language'])
+        for name, bmi in bmis.items():
+            bocca.create_bmi_class(name, **bmi)
