@@ -26,26 +26,96 @@ class ProjectExistsError(Error):
         return self._name
 
 
+class Bocca(object):
+    def __init__(self, bocca=None):
+        self._bocca = bocca or which('bocca')
+        if self._bocca is None:
+            raise RuntimeError('unable to find bocca')
+
+    @property
+    def bocca(self):
+        return self._bocca
+
+    def create_project(self, name, language=None, ifexists='raise'):
+        if ifexists not in ['pass', 'raise', 'clobber']:
+            raise ValueError('ifexists value not understood')
+
+        options = []
+        if language is not None:
+            options += ['--language=%s' % language]
+
+        if is_bocca_project(name):
+            if ifexists == 'raise':
+                raise ProjectExistsError('project exists')
+            elif ifexists == 'clobber':
+                shutil.rmtree(name)
+
+        system([self.bocca, 'create', 'project', name] + options)
+
+    def create_interface(self, name, sidl=None):
+        options = []
+        if sidl is not None:
+            options += ['--import-sidl=%s@%s' % (name, sidl)]
+
+        system([self.bocca, 'create', 'interface', name] + options)
+
+
+    def create_class(self, name, implements=None, language=None, sidl=None,
+                     impl=None):
+        options = []
+        if sidl is not None:
+            options += ['--import-sidl=%s@%s' % (name, sidl)]
+        if impl is not None:
+            options += ['--import-impl=%s@%s' % (name, impl)]
+        if language is not None:
+            options += ['--language=%s' % language]
+        if implements is not None:
+            options += ['--implements=%s' % implements]
+
+        system([self.bocca, 'create', 'class', name] + options)
+
+        if impl:
+            for fname in ['make.vars.user', 'make.rules.user']:
+                shutil.copy(os.path.join(impl, fname),
+                            os.path.join('components', name))
+
+    def create_bmi_class(self, name, language='c', bmi_mapping=None,
+                         pkg_config_package=None, impl=None):
+        bmi_mapping = bmi_mapping or {}
+
+        if pkg_config_package:
+            bmi_mapping.setdefault('cflags', pkg_config(pkg_config_package, '--cflags'))
+            bmi_mapping.setdefault('libs', pkg_config(pkg_config_package, '--libs'))
+
+        bmi_mapping.setdefault('includes', '')
+        if not isinstance(bmi_mapping['includes'], types.StringTypes):
+            bmi_mapping['includes'] = os.linesep.join(bmi_mapping['includes'])
+
+        bmi_mapping.setdefault('prefix', '')
+        try:
+            bmi_mapping['defines'] = get_grid_type_defines(bmi_mapping['grids'])
+        except KeyError:
+            bmi_mapping['defines'] = ''
+
+        for key in bmi_mapping.keys():
+            bmi_mapping['bmi_' + key] = bmi_mapping[key]
+
+        with mktemp(prefix='csdms', suffix='.d') as destdir:
+            #impl_dir = dup_c_impl(impl, name, destdir=destdir)
+            if impl is not None:
+                impl_dir = dup_impl_files(impl, name, destdir=destdir,
+                                         language=language)
+                replace_bmi_names(glob.glob(os.path.join(impl_dir, '*')),
+                                  bmi_mapping)
+            else:
+                impl_dir = None
+
+            self.create_class(name, implements='csdms.core.Bmi',
+                              language=language, impl=impl_dir)
+
+
 def is_bocca_project(name):
     return os.path.isdir(os.path.join(name, 'BOCCA'))
-
-
-def create_project(name, bocca=None, language=None, ifexists='pass'):
-    if ifexists not in ['pass', 'raise', 'clobber']:
-        raise ValueError('ifexists value not understood')
-
-    bocca = bocca or which('bocca')
-    options = []
-    if language is not None:
-        options += ['--language=%s' % language]
-
-    if is_bocca_project(name):
-        if ifexists == 'raise':
-            raise ProjectExistsError('project exists')
-        elif ifexists == 'clobber':
-            shutil.rmtree(name)
-
-    system([bocca, 'create', 'project', name] + options)
 
 
 def create_interface(name, bocca=None, sidl=None):
@@ -55,39 +125,6 @@ def create_interface(name, bocca=None, sidl=None):
         options += ['--import-sidl=%s@%s' % (name, sidl)]
 
     system([bocca, 'create', 'interface', name] + options)
-
-
-def create_class(name, bocca=None, implements=None, language=None, sidl=None,
-                 impl=None, includes='', libs=''):
-    bocca = bocca or which('bocca')
-    options = []
-    if sidl is not None:
-        options += ['--import-sidl=%s@%s' % (name, sidl)]
-    if impl is not None:
-        options += ['--import-impl=%s@%s' % (name, impl)]
-    if language is not None:
-        options += ['--language=%s' % language]
-    if implements is not None:
-        options += ['--implements=%s' % implements]
-
-    system([bocca, 'create', 'class', name] + options)
-
-    if impl:
-        for fname in ['make.vars.user', 'make.rules.user']:
-            shutil.copy(os.path.join(impl, fname),
-                        os.path.join('components', name))
-
-    #make_vars_user = 'components/%s/make.vars.user' % name
-
-    #f = fileinput.input(make_vars_user, inplace=True)
-    #for line in f:
-    #    if line.startswith('INCLUDES ='):
-    #        print ' '.join([line.rstrip(), includes])
-    #    elif line.startswith('LIBS ='):
-    #        print ' '.join([line.rstrip(), libs])
-    #    else:
-    #        print line.rstrip()
-    #f.close ()
 
 
 def class_language(name, bocca=None):
@@ -201,7 +238,6 @@ def replace_py_class_names(paths, src, dest, inplace=True):
             new_class = dest_with_underscores.split('_')[-1]
             path = re.sub(old_class, new_class,
                           os.path.basename(path))
-            print '%s -> %s in %s = %s' % (old_class, new_class, os.path.basename(path), path)
         with open(path, 'w') as fp:
             fp.write(contents)
 
@@ -352,42 +388,6 @@ def get_grid_type_defines(grid_types):
     return os.linesep.join(defines)
 
 
-def create_bmi_class(name, bocca=None, language='c', bmi_mapping=None,
-                     pkg_config_package=None, impl=None):
-    bocca = bocca or which('bocca')
-    bmi_mapping = bmi_mapping or {}
-
-    if pkg_config_package:
-        bmi_mapping.setdefault('cflags', pkg_config(pkg_config_package, '--cflags'))
-        bmi_mapping.setdefault('libs', pkg_config(pkg_config_package, '--libs'))
-
-    bmi_mapping.setdefault('includes', '')
-    if not isinstance(bmi_mapping['includes'], types.StringTypes):
-        bmi_mapping['includes'] = os.linesep.join(bmi_mapping['includes'])
-
-    bmi_mapping.setdefault('prefix', '')
-    try:
-        bmi_mapping['defines'] = get_grid_type_defines(bmi_mapping['grids'])
-    except KeyError:
-        bmi_mapping['defines'] = ''
-
-    for key in bmi_mapping.keys():
-        bmi_mapping['bmi_' + key] = bmi_mapping[key]
-
-    with mktemp(prefix='csdms', suffix='.d') as destdir:
-        #impl_dir = dup_c_impl(impl, name, destdir=destdir)
-        if impl is not None:
-            impl_dir = dup_impl_files(impl, name, destdir=destdir,
-                                     language=language)
-            replace_bmi_names(glob.glob(os.path.join(impl_dir, '*')),
-                              bmi_mapping)
-        else:
-            impl_dir = None
-
-        create_class(name, bocca=bocca, implements='csdms.core.Bmi',
-                     language=language, impl=impl_dir)
-
-
 _THIS_DIR = os.path.dirname(__file__)
 _PATH_TO_IMPL = {
     'c': os.path.join(_THIS_DIR, 'data', 'csdms.examples.c.Heat'),
@@ -403,15 +403,16 @@ def make_project(proj, clobber=False):
     else:
         ifexists = 'raise'
 
-    create_project(proj['name'], language=proj['language'], ifexists=ifexists)
+    bocca = Bocca()
+    bocca.create_project(proj['name'], language=proj['language'],
+                         ifexists=ifexists)
     with cd(proj['name']) as path:
         for interface in proj.get('interfaces', []):
             name = interface.pop('name')
-            create_interface(name, **interface)
+            bocca.create_interface(name, **interface)
 
         for clazz in proj.get('bmi', []):
             name = 'csdms.%s' % clazz.pop('name')
-            #name = 'csdms.model.%s' % clazz.pop('name')
             clazz.setdefault('impl', _PATH_TO_IMPL[clazz['language']])
-            create_bmi_class(name, bmi_mapping=clazz, impl=clazz['impl'],
-                             language=clazz['language'])
+            bocca.create_bmi_class(name, bmi_mapping=clazz, impl=clazz['impl'],
+                                   language=clazz['language'])
