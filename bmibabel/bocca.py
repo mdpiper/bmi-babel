@@ -118,15 +118,6 @@ def is_bocca_project(name):
     return os.path.isdir(os.path.join(name, 'BOCCA'))
 
 
-def create_interface(name, bocca=None, sidl=None):
-    bocca = bocca or which('bocca')
-    options = []
-    if sidl is not None:
-        options += ['--import-sidl=%s@%s' % (name, sidl)]
-
-    system([bocca, 'create', 'interface', name] + options)
-
-
 def class_language(name, bocca=None):
     bocca = bocca or which('bocca')
 
