@@ -28,10 +28,16 @@ _PATH_TO_SIDL = os.path.join(_THIS_DIR, 'data')
 
 
 class Error(Exception):
+
+    """Base exception class for this module."""
+
     pass
 
 
 class ProjectExistsError(Error):
+
+    """Raise this exception for an already existing project."""
+
     def __init__(self, name):
         self._name = name
 
@@ -163,6 +169,24 @@ class Bocca(object):
 
 
 def make_impl_dir(name, language, subs=None, destdir='.'):
+    """Create a folder with implementation code.
+
+    Parameters
+    ----------
+    name : str
+        Name of the new component class.
+    language : {'c', 'cxx', 'python'}
+        Language of the new class.
+    subs : dict, optional
+        Substitutions to make in the impl files.
+    destdir : path, optional
+        Path to folder that will contain new impl files.
+
+    Returns
+    -------
+    str
+        Path to new impl folder.
+    """
     subs = subs or {}
 
     src_impls = _PATH_TO_IMPL[language]
@@ -175,10 +199,36 @@ def make_impl_dir(name, language, subs=None, destdir='.'):
 
 
 def is_bocca_project(name):
+    """Check if a folder is a bocca project.
+
+    Parameters
+    ----------
+    name : str
+        Name of folder.
+
+    Returns
+    -------
+    boolean
+        ``True`` if the folder contains a bocca project. Otherwise, ``False``.
+    """
     return os.path.isdir(os.path.join(name, 'BOCCA'))
 
 
 def class_language(name, bocca=None):
+    """Get the language of a class within a bocca project.
+
+    Parameters
+    ----------
+    name : str
+        Name of class.
+    bocca : str, optional
+        Path to the bocca program.
+
+    Returns
+    -------
+    str
+        Language of the class.
+    """
     bocca = bocca or which('bocca')
 
     import re
@@ -189,6 +239,22 @@ def class_language(name, bocca=None):
 
 
 def class_files(name, bocca=None, pattern=None):
+    """Get user-editable files for a bocca class.
+
+    Parameters
+    ----------
+    name : str
+        Name of class.
+    bocca : str, optional
+        Path to the bocca program.
+    pattern : str
+        Glob-style pattern.
+
+    Returns
+    -------
+    list
+        Names of user-editable files.
+    """
     from fnmatch import fnmatch
 
     bocca = bocca or which('bocca')
@@ -202,6 +268,17 @@ def class_files(name, bocca=None, pattern=None):
 
 def replace_class_name(src, dest, include=None, prefix=None, cflags=None,
                        libs=None):
+    """Replace the name of a class in impl files.
+
+    .. note:: Deprecated.
+
+    Parameters
+    ----------
+    src : str
+        Name of source class.
+    dest : str
+        Name of destination class.
+    """
     import re
 
     cflags = cflags or ''
@@ -229,6 +306,9 @@ def replace_class_name(src, dest, include=None, prefix=None, cflags=None,
 
 
 def substitute_in_file(file_like, pattern, repl):
+    """
+    .. note:: Deprecated.
+    """
     if isinstance(file_like, types.StringTypes):
         with open(file_like, 'r') as fp:
             contents = fp.read()
@@ -243,12 +323,40 @@ def substitute_in_file(file_like, pattern, repl):
 
 
 def substitute_patterns(subs, string):
+    """Substitute patterns in a string.
+
+    Parameters
+    ----------
+    subs : iterable
+        Iterable of tuples of (*pattern*, *repl*).
+    string : str
+        String to make substitutions.
+
+    Returns
+    -------
+    str
+        Resulting string with substitutions.
+    """
     for pattern, repl in subs:
         string = re.sub(pattern, repl, string)
     return string
 
 
 def substitute_patterns_in_file(subs, file_like):
+    """Substitute patterns in a file.
+
+    Parameters
+    ----------
+    subs : iterable
+        Iterable of tuples of (*pattern*, *repl*).
+    file_like : file_like
+        File-like object to make substitutions.
+
+    Returns
+    -------
+    str
+        Resulting string with substitutions.
+    """
     if isinstance(file_like, types.StringTypes):
         with open(file_like, 'r') as fp:
             contents = fp.read()
@@ -258,6 +366,19 @@ def substitute_patterns_in_file(subs, file_like):
 
 
 def replace_c_class_names(paths, src, dest, inplace=True):
+    """Replace C class names in impl files.
+
+    Parameters
+    ----------
+    paths : iterable
+        Path to impl files.
+    src : str
+        Name of source class.
+    dest : str
+        Name of destination class.
+    inplace : boolean, optional
+        Make substitutions in-place.
+    """
     src_with_underscores = re.sub('\.', '_', src)
     dest_with_underscores = re.sub('\.', '_', dest)
     subs = (
@@ -275,6 +396,19 @@ def replace_c_class_names(paths, src, dest, inplace=True):
 
 
 def replace_py_class_names(paths, src, dest, inplace=True):
+    """Replace Python class names in impl files.
+
+    Parameters
+    ----------
+    paths : iterable
+        Path to impl files.
+    src : str
+        Name of source class.
+    dest : str
+        Name of destination class.
+    inplace : boolean, optional
+        Make substitutions in-place.
+    """
     src_with_underscores = re.sub('\.', '_', src)
     dest_with_underscores = re.sub('\.', '_', dest)
     subs = (
@@ -294,6 +428,19 @@ def replace_py_class_names(paths, src, dest, inplace=True):
 
 
 def replace_cxx_class_names(paths, src, dest, inplace=True):
+    """Replace C++ class names in impl files.
+
+    Parameters
+    ----------
+    paths : iterable
+        Path to impl files.
+    src : str
+        Name of source class.
+    dest : str
+        Name of destination class.
+    inplace : boolean, optional
+        Make substitutions in-place.
+    """
     src_with_underscores = re.sub('\.', '_', src)
     dest_with_underscores = re.sub('\.', '_', dest)
     src_with_colons = re.sub('\.', '::', src)
@@ -314,6 +461,15 @@ def replace_cxx_class_names(paths, src, dest, inplace=True):
 
 
 def replace_bmi_names(paths, mapping):
+    """Replace BMI variables in impl files.
+
+    Parameters
+    ----------
+    paths : iterable
+        Paths to impl files.
+    mapping : dict
+        Mapping to use in substitutsions.
+    """
     for path in paths:
         if os.path.isfile(path):
             with open(path, 'r') as fp:
@@ -323,6 +479,17 @@ def replace_bmi_names(paths, mapping):
 
 
 def copy_class(src, dest, bocca=None):
+    """Copy a bocca class.
+
+    Parameters
+    ----------
+    src : str
+        Name of source class.
+    dest : str
+        Name of destination class.
+    bocca : str, optional
+        Path to bocca program.
+    """
     bocca = bocca or which('bocca')
 
     system([bocca, 'copy', 'class', src, dest])
@@ -401,6 +568,18 @@ def dup_impl_files(path, new, destdir='.', language=None):
 
 
 def guess_language_from_files(path):
+    """Guess the language of a bocca class.
+
+    Parameters
+    ----------
+    path : str
+        Path to a bocca class.
+
+    Returns
+    -------
+    str
+        Language of the class.
+    """
     from glob import glob
 
     with cd(path) as _:
@@ -428,6 +607,9 @@ _GRID_TYPE_FUNCTIONS = {
 }
 
 def get_grid_type_defines(grid_types):
+    """
+    .. note:: Deprecated.
+    """
     if isinstance(grid_types, types.StringTypes):
         grid_types = [grid_types]
 
@@ -440,6 +622,18 @@ def get_grid_type_defines(grid_types):
 
 
 def get_interfaces(proj):
+    """Get interfaces in a project description.
+
+    Parameters
+    ----------
+    proj : dict
+        Project description.
+
+    Returns
+    -------
+    list
+        Interfaces descriptions.
+    """
     interfaces = {}
     for interface in proj.get('interfaces', []):
         name = interface.pop('name')
@@ -449,12 +643,36 @@ def get_interfaces(proj):
 
 
 def render_include_block(includes):
+    """Construct an include block.
+
+    Parameters
+    ----------
+    includes : iterable or str
+        Lines of the include block.
+
+    Returns
+    -------
+    str
+        Include block.
+    """
     if not isinstance(includes, types.StringTypes):
         return os.linesep.join(includes)
     return includes
 
 
 def get_bmis(proj):
+    """Get BMI descriptions for a project.
+
+    Parameters
+    ----------
+    proj : dict
+        BMI project description.
+
+    Returns
+    -------
+    list
+        The BMI descriptions in the project.
+    """
     bmis = {}
     for bmi in proj.get('bmi', []):
         language = bmi.pop('language')
@@ -486,6 +704,15 @@ def get_bmis(proj):
 
 
 def make_project(proj, clobber=False):
+    """Make a bocca project with BMI implementations.
+
+    Parameters
+    ----------
+    proj : dict
+        BMI project description.
+    clobber : boolean, optional
+        Clobber an existing project if it exists.
+    """
     if clobber:
         ifexists = 'clobber'
     else:
