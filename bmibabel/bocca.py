@@ -1,4 +1,6 @@
 #! /usr/bin/env python
+"""Some bocca utilities."""
+
 import os
 import subprocess
 import types
@@ -38,6 +40,9 @@ class ProjectExistsError(Error):
 
 
 class Bocca(object):
+
+    """Build babel projects with bocca."""
+
     def __init__(self, bocca=None):
         self._bocca = bocca or which('bocca')
         if self._bocca is None:
@@ -45,9 +50,21 @@ class Bocca(object):
 
     @property
     def bocca(self):
+        """Path to bocca command."""
         return self._bocca
 
     def create_project(self, name, language=None, ifexists='raise'):
+        """Create a new bocca project.
+
+        Paramters
+        ---------
+        name : str
+            Name of the new bocca project.
+        language : str, optional
+            Default language for the project.
+        ifexists : {'pass', 'raise', 'clobber'}
+            What to do if the project already exists.
+        """
         if ifexists not in ['pass', 'raise', 'clobber']:
             raise ValueError('ifexists value not understood')
 
@@ -64,6 +81,15 @@ class Bocca(object):
         system([self.bocca, 'create', 'project', name] + options)
 
     def create_interface(self, name, sidl=None):
+        """Create a new interface.
+
+        Paramters
+        ---------
+        name : str
+            Name of the new interface.
+        sidl : str, optional
+            Path to a SIDL description of the interface.
+        """
         if sidl is None or sidl is True:
             sidl = os.path.join(_PATH_TO_SIDL, name + '.sidl')
 
@@ -76,6 +102,21 @@ class Bocca(object):
 
     def create_class(self, name, implements=None, language=None, sidl=None,
                      impl=None):
+        """Create a new class.
+
+        Paramters
+        ---------
+        name : str
+            Name of the new interface.
+        implements : str, optional
+            Name of a babel interface the class implements.
+        language : {'c', 'cxx', 'python'}
+            Language of the class implementation.
+        sidl : str, optional
+            Path to a SIDL description of the interface.
+        impl : str, optional
+            Path to folder containing implementation files to import.
+        """
         options = []
         if sidl is not None:
             options += ['--import-sidl=%s@%s' % (name, sidl)]
@@ -95,6 +136,21 @@ class Bocca(object):
 
     def create_bmi_class(self, name, language='c', bmi_mapping=None,
                          pkg_config_package=None, impl=None):
+        """Create a class that implements the Basic Model Interface.
+
+        Paramters
+        ---------
+        name : str
+            Name of the new interface.
+        bmi_mapping : dict_like
+            Substitutions to make in the implementation files.
+        pkg_config_package : str
+            Name of a pkg-config package.
+        language : {'c', 'cxx', 'python'}
+            Language of the class implementation.
+        impl : str, optional
+            Path to folder containing implementation files to import.
+        """
         bmi_mapping = bmi_mapping or {}
 
         kwds = dict(implements='csdms.core.Bmi', language=language)
