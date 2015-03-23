@@ -16,10 +16,10 @@ from .utils import cd, mktemp, which, system, check_output
 
 _THIS_DIR = os.path.dirname(__file__)
 _PATH_TO_IMPL = {
-    'c': os.path.join(_THIS_DIR, 'data', 'csdms.examples.c.Heat'),
+    'c': os.path.join(_THIS_DIR, 'data', 'c.Component'),
     'cxx': os.path.join(_THIS_DIR, 'data', 'csdms.examples.cxx.Heat'),
     'f90': os.path.join(_THIS_DIR, 'data', 'csdms.examples.f90.Heat'),
-    'python': os.path.join(_THIS_DIR, 'data', 'csdms.examples.py.Heat'),
+    'python': os.path.join(_THIS_DIR, 'data', 'py.Component'),
 }
 
 
@@ -403,14 +403,14 @@ def get_bmis(proj):
         if language in ['c', 'cxx']:
             mapping = {
                 'bmi_includes': render_include_block(bmi.get('includes', '')),
-                'bmi_register': bmi['register'],
+                'bmi_register': bmi.get('register', None),
                 'bmi_libs': bmi.get('libs', ''),
                 'bmi_cflags': bmi.get('cflags', ''),
             }
         elif language in ['python', 'py']:
             mapping = {
-                'bmi_package': bmi['package'],
-                'bmi_class': bmi['class'],
+                'bmi_package': bmi.get('package', None),
+                'bmi_class': bmi.get('class', None),
             }
         else:
             mapping = {}
