@@ -41,8 +41,8 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'bmi-babel-make=bmibabel.make:main',
-            'bmi-babel-fetch=bmibabel.fetch:main',
+            'bmi-babel-make=bmibabel.cmd.make:main',
+            'bmi-babel-fetch=bmibabel.cmd.fetch:main',
         ],
     },
 )

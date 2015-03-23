@@ -2,7 +2,7 @@ import argparse
 
 import yaml
 
-from .bocca import make_project, ProjectExistsError
+from ..bocca import make_project, ProjectExistsError
 
 
 def main():

@@ -9,10 +9,10 @@ import types
 import yaml
 from distutils.dir_util import mkpath
 
-from .utils import cd, check_output, system, read_first_of
-from .git import git_repo_name, git_clone_or_update, git_repo_sha
-from .project import empty_bmi_project, add_bmi_component
-from . import api
+from ..utils import cd, check_output, system, read_first_of
+from ..git import git_repo_name, git_clone_or_update, git_repo_sha
+from ..project import empty_bmi_project, add_bmi_component
+from .. import api
 
 
 def load_bmi_info(dir):
