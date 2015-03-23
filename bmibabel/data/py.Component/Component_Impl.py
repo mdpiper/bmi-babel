@@ -1,0 +1,669 @@
+#
+# File:          Component_Impl.py
+# Symbol:        py.Component-v0.0
+# Symbol Type:   class
+# Babel Version: 1.4.0 (Revision: 6607 release-1-4-0-branch)
+# Description:   Implementation of sidl class py.Component in Python.
+# 
+# WARNING: Automatically generated; changes will be lost
+# 
+#
+
+
+# DO-NOT-DELETE splicer.begin(_initial)
+# Insert-Code-Here {_initial} ()
+# DO-NOT-DELETE splicer.end(_initial)
+
+import csdms.core.Bmi
+import py.Component
+import sidl.BaseClass
+import sidl.BaseInterface
+import sidl.ClassInfo
+import sidl.RuntimeException
+import sidl.NotImplementedException
+
+# DO-NOT-DELETE splicer.begin(_before_type)
+import sys
+from ${bmi_package} import ${bmi_class} as Model
+# DO-NOT-DELETE splicer.end(_before_type)
+
+class Component:
+
+# All calls to sidl methods should use __IORself
+
+# Normal Babel creation pases in an IORself. If IORself == None
+# that means this Impl class is being constructed for native delegation
+  def __init__(self, IORself = None):
+    if (IORself == None):
+      self.__IORself = py.Component.Component(impl = self)
+    else:
+      self.__IORself = IORself
+# DO-NOT-DELETE splicer.begin(__init__)
+
+    # Put your code here...
+    self._model = Model()
+
+    # Bocca generated code. bocca.protected.begin(py.Component._init) 
+    self.bocca_print_errs = True
+    # Bocca generated code. bocca.protected.end(py.Component._init) 
+
+# DO-NOT-DELETE splicer.end(__init__)
+
+# Returns the IORself (client stub) of the Impl, mainly for use
+# with native delegation
+  def _getStub(self):
+    return self.__IORself
+
+  def boccaForceUsePortInclude(self):
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # None
+    #
+
+    """\
+ This function should never be called, but helps babel generate better code. 
+"""
+    # DO-NOT-DELETE splicer.begin(boccaForceUsePortInclude)
+    # DO-NOT-EDIT-BOCCA
+    # Bocca generated code. bocca.protected.begin(boccaForceUsePortInclude)
+    return
+    # Bocca generated code. bocca.protected.end(boccaForceUsePortInclude)
+    # DO-NOT-DELETE splicer.end(boccaForceUsePortInclude)
+
+  def initialize(self, config_file):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # string config_file
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # bool _return
+    #
+
+# DO-NOT-DELETE splicer.begin(initialize)
+    self._model.initialize(config_file)
+    return 0
+# DO-NOT-DELETE splicer.end(initialize)
+
+  def update(self, time_interval):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # double time_interval
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # bool _return
+    #
+
+# DO-NOT-DELETE splicer.begin(update)
+    self._model.update_until(time_interval)
+    return 0
+# DO-NOT-DELETE splicer.end(update)
+
+  def finalize(self):
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # bool _return
+    #
+
+# DO-NOT-DELETE splicer.begin(finalize)
+    return self._model.finalize()
+    return 0
+# DO-NOT-DELETE splicer.end(finalize)
+
+  def get_start_time(self):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # (_return, time)
+    # int _return
+    # double time
+    #
+
+# DO-NOT-DELETE splicer.begin(get_start_time)
+    return (0, self._model.get_start_time())
+# DO-NOT-DELETE splicer.end(get_start_time)
+
+  def get_current_time(self):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # (_return, time)
+    # int _return
+    # double time
+    #
+
+# DO-NOT-DELETE splicer.begin(get_current_time)
+    return (0, self._model.get_current_time())
+# DO-NOT-DELETE splicer.end(get_current_time)
+
+  def get_end_time(self):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # (_return, time)
+    # int _return
+    # double time
+    #
+
+# DO-NOT-DELETE splicer.begin(get_end_time)
+    return (0, self._model.get_end_time())
+# DO-NOT-DELETE splicer.end(get_end_time)
+
+  def get_component_name(self):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # (_return, name)
+    # int _return
+    # string name
+    #
+
+# DO-NOT-DELETE splicer.begin(get_component_name)
+    return (0, self._model.get_component_name())
+# DO-NOT-DELETE splicer.end(get_component_name)
+
+  def get_input_item_count(self):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # (_return, count)
+    # int _return
+    # int count
+    #
+
+# DO-NOT-DELETE splicer.begin(get_input_item_count)
+    return (0, self._model.get_input_item_count())
+# DO-NOT-DELETE splicer.end(get_input_item_count)
+
+  def get_output_item_count(self):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # (_return, count)
+    # int _return
+    # int count
+    #
+
+# DO-NOT-DELETE splicer.begin(get_output_item_count)
+    return (0, self._model.get_output_item_count())
+# DO-NOT-DELETE splicer.end(get_output_item_count)
+
+  def get_input_var_names(self):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # (_return, names)
+    # int _return
+    # array<string> names
+    #
+
+# DO-NOT-DELETE splicer.begin(get_input_var_names)
+    return 0, np.array(self._model.get_input_var_names(), dtype=str)
+# DO-NOT-DELETE splicer.end(get_input_var_names)
+
+  def get_output_var_names(self):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # (_return, names)
+    # int _return
+    # array<string> names
+    #
+
+# DO-NOT-DELETE splicer.begin(get_output_var_names)
+    return 0, np.array(self._model.get_output_var_names(), dtype=str)
+# DO-NOT-DELETE splicer.end(get_output_var_names)
+
+  def get_var_type(self, name):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # string name
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # (_return, type)
+    # int _return
+    # string type
+    #
+
+# DO-NOT-DELETE splicer.begin(get_var_type)
+    return (0, self._model.get_var_type(name))
+# DO-NOT-DELETE splicer.end(get_var_type)
+
+  def get_var_units(self, name):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # string name
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # (_return, units)
+    # int _return
+    # string units
+    #
+
+# DO-NOT-DELETE splicer.begin(get_var_units)
+    return (0, self._model.get_var_units(name))
+# DO-NOT-DELETE splicer.end(get_var_units)
+
+  def get_var_nbytes(self, name):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # string name
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # (_return, nbytes)
+    # int _return
+    # int nbytes
+    #
+
+# DO-NOT-DELETE splicer.begin(get_var_nbytes)
+    return (0, self._model.get_var_nbytes(name))
+# DO-NOT-DELETE splicer.end(get_var_nbytes)
+
+  def get_var_itemsize(self, name):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # string name
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # (_return, size)
+    # int _return
+    # int size
+    #
+
+# DO-NOT-DELETE splicer.begin(get_var_itemsize)
+    return (0, self._model.get_var_itemsize(name))
+# DO-NOT-DELETE splicer.end(get_var_itemsize)
+
+  def get_var_grid(self, name):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # string name
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # (_return, grid)
+    # int _return
+    # int grid
+    #
+
+# DO-NOT-DELETE splicer.begin(get_var_grid)
+    return (0, self._model.get_var_grid(name))
+# DO-NOT-DELETE splicer.end(get_var_grid)
+
+  def get_grid_type(self, grid):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # int grid
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # (_return, type)
+    # int _return
+    # string type
+    #
+
+# DO-NOT-DELETE splicer.begin(get_grid_type)
+    return (0, self._model.get_grid_type(name))
+# DO-NOT-DELETE splicer.end(get_grid_type)
+
+  def get_grid_rank(self, grid):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # int grid
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # (_return, rank)
+    # int _return
+    # int rank
+    #
+
+# DO-NOT-DELETE splicer.begin(get_grid_rank)
+    return (0, self._model.get_grid_rank(name))
+# DO-NOT-DELETE splicer.end(get_grid_rank)
+
+  def get_grid_size(self, grid):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # int grid
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # (_return, size)
+    # int _return
+    # int size
+    #
+
+# DO-NOT-DELETE splicer.begin(get_grid_size)
+    return (0, self._model.get_grid_size(name))
+# DO-NOT-DELETE splicer.end(get_grid_size)
+
+  def get_grid_shape(self, grid, shape):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # int grid
+    # array<int> shape
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # int _return
+    #
+
+# DO-NOT-DELETE splicer.begin(get_grid_shape)
+    self._model.get_grid_shape(name, shape)
+    return 0
+# DO-NOT-DELETE splicer.end(get_grid_shape)
+
+  def get_grid_spacing(self, grid, spacing):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # int grid
+    # array<int> spacing
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # int _return
+    #
+
+# DO-NOT-DELETE splicer.begin(get_grid_spacing)
+    self._model.get_grid_spacing(name, spacing)
+    return 0
+# DO-NOT-DELETE splicer.end(get_grid_spacing)
+
+  def get_grid_origin(self, grid, origin):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # int grid
+    # array<int> origin
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # int _return
+    #
+
+# DO-NOT-DELETE splicer.begin(get_grid_origin)
+    self._model.get_grid_origin(name, origin)
+    return 0
+# DO-NOT-DELETE splicer.end(get_grid_origin)
+
+  def get_grid_x(self, grid, x):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # int grid
+    # array<double> x
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # int _return
+    #
+
+# DO-NOT-DELETE splicer.begin(get_grid_x)
+    self._model.get_grid_x(name, x)
+    return 0
+# DO-NOT-DELETE splicer.end(get_grid_x)
+
+  def get_grid_y(self, grid, y):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # int grid
+    # array<double> y
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # int _return
+    #
+
+# DO-NOT-DELETE splicer.begin(get_grid_y)
+    self._model.get_grid_y(name, y)
+    return 0
+# DO-NOT-DELETE splicer.end(get_grid_y)
+
+  def get_grid_z(self, grid, z):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # int grid
+    # array<double> z
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # int _return
+    #
+
+# DO-NOT-DELETE splicer.begin(get_grid_z)
+    self._model.get_grid_z(name, z)
+    return 0
+# DO-NOT-DELETE splicer.end(get_grid_z)
+
+  def get_grid_connectivity(self, grid, connectivity):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # int grid
+    # array<int> connectivity
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # int _return
+    #
+
+# DO-NOT-DELETE splicer.begin(get_grid_connectivity)
+    self._model.get_grid_connectivity(name, connectivity)
+    return 0
+# DO-NOT-DELETE splicer.end(get_grid_connectivity)
+
+  def get_grid_offset(self, grid, offset):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # int grid
+    # array<int> offset
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # int _return
+    #
+
+# DO-NOT-DELETE splicer.begin(get_grid_offset)
+    self._model.get_grid_offset(name, offset)
+    return 0
+# DO-NOT-DELETE splicer.end(get_grid_offset)
+
+  def get_value(self, name, dest):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # string name
+    # array<> dest
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # int _return
+    #
+
+# DO-NOT-DELETE splicer.begin(get_value)
+    self._model.get_value(name, dest)
+    return 0
+# DO-NOT-DELETE splicer.end(get_value)
+
+  def get_value_ptr(self, name):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # string name
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # (_return, values)
+    # int _return
+    # array<> values
+    #
+
+# DO-NOT-DELETE splicer.begin(get_value_ptr)
+    return 0, self._model.get_value_ptr(name)
+# DO-NOT-DELETE splicer.end(get_value_ptr)
+
+  def get_value_at_indices(self, name, dest, inds):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # string name
+    # array<> dest
+    # array<int> inds
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # int _return
+    #
+
+# DO-NOT-DELETE splicer.begin(get_value_at_indices)
+    self._model.get_value_at_indices(name, dest, inds)
+    return 0
+# DO-NOT-DELETE splicer.end(get_value_at_indices)
+
+  def set_value(self, name, values):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # string name
+    # array<> values
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # int _return
+    #
+
+# DO-NOT-DELETE splicer.begin(set_value)
+    self._model.set_value(name, values)
+    return 0
+# DO-NOT-DELETE splicer.end(set_value)
+
+  def set_value_at_indices(self, name, inds, src):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    # string name
+    # array<int> inds
+    # array<> src
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # int _return
+    #
+
+# DO-NOT-DELETE splicer.begin(set_value_at_indices)
+    self._model.set_value_at_indices(name, inds, src)
+    return 0
+# DO-NOT-DELETE splicer.end(set_value_at_indices)
+
+# DO-NOT-DELETE splicer.begin(_final)
+# Insert-Code-Here {_final} ()
+# DO-NOT-DELETE splicer.end(_final)
