@@ -1,0 +1,17 @@
+language: c
+name: csdms
+
+interfaces:
+- name: csdms.core.Bmi
+
+bmi:
+- language: c
+  name: csdms.model.HeatC
+  includes:
+  - "#include <heat/bmi_heat.h>"
+  register: register_bmi_heat
+
+- language: python
+  name: csdms.model.HeatPy
+  package: csdms.heat
+  class: Heat
