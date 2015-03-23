@@ -1,4 +1,6 @@
 #! /usr/bin/env python
+"""Fetch remote BMI models."""
+
 import os
 import subprocess
 import re
@@ -14,13 +16,25 @@ from . import api
 
 
 def load_bmi_info(dir):
+    """Load a BMI info file.
+
+    Parameters
+    ----------
+    dir : str
+        Path to model that contains a BMI description.
+
+    Returns
+    -------
+    dict
+        Description of the BMI model.
+    """
     with cd(dir):
         with open(os.path.join('.bmi', 'info.yaml'), 'r') as fp:
             info = yaml.load(fp)
 
         if 'summary' not in info:
             info['summary'] = read_first_of(['README.md', 'README',
-                                           'README.txt']).strip()
+                                             'README.txt']).strip()
 
         if 'license' not in info:
             info['license'] = read_first_of(['LICENSE', 'LICENSE.txt']).strip()
@@ -29,6 +43,18 @@ def load_bmi_info(dir):
 
 
 def load_bmi_api(dir='.'):
+    """Load an API description file.
+
+    Parameters
+    ----------
+    dir : str, optional
+        Path to model that contains a BMI description.
+
+    Returns
+    -------
+    dict
+        Description of the model API.
+    """
     with cd(dir):
         with open(os.path.join('.bmi', 'api.yaml'), 'r') as fp:
             api = yaml.load(fp)
@@ -46,6 +72,18 @@ def load_bmi_api(dir='.'):
 
 
 def load_build_script(dir='.'):
+    """Load a BMI build script.
+
+    Parameters
+    ----------
+    dir : str, optional
+        Path to model that contains a BMI description.
+
+    Returns
+    -------
+    dict
+        Build description.
+    """
     with cd(dir):
         with open(os.path.join('.bmi', 'api.yaml'), 'r') as fp:
             api = yaml.load(fp)
@@ -53,6 +91,13 @@ def load_build_script(dir='.'):
 
 
 def build_api(build):
+    """Build the API from a script.
+
+    Parameters
+    ----------
+    build : dict
+        Build description.
+    """
     if isinstance(build, dict) and 'brew' in build:
         brew = build['brew']
         opts = brew.get('options', [])
@@ -64,17 +109,57 @@ def build_api(build):
 
 
 def cache_dir_from_repo(repo, branch='master'):
+    """Name of cache directory for a git repository.
+
+    Parameters
+    ----------
+    repo : str
+        URL of git repository.
+    branch : str, optional
+        Branch of the git repository.
+
+    Returns
+    -------
+    str
+        Name of the directory to use for the cache.
+    """
     return os.path.join('cache', git_repo_name(repo) +
                                  '-%s' % git_repo_sha(repo, branch=branch))
 
 
 def component_name_from_repo(repo, name=None):
+    """Get fully-qualified component name from repository name.
+
+    Parameters
+    ----------
+    repo : str
+        Name of a repository.
+    name : str, optional
+        Name of component.
+
+    Returns
+    -------
+    str
+        Fully-qualified component name.
+    """
     name = name or re.sub('-', '', os.path.basename(repo).title())
 
     return '.'.join(['model', name])
 
 
 def parse_repo_line(line):
+    """Parse a line containing the location of a BMI repository.
+
+    Parameters
+    ----------
+    line : str
+        Location of repository.
+
+    Returns
+    -------
+    (repo, branch)
+        Tuple of repository url, and a branch name.
+    """
     if ',' in line:
         repo, branch = line.split(',')
     else:
