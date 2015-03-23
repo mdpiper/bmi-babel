@@ -1,4 +1,6 @@
 #! /usr/bin/env python
+"""Work with api.yaml files from a BMI description."""
+
 import os
 import types
 
