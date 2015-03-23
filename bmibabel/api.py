@@ -15,8 +15,23 @@ _VALID_KEYS = _REQUIRED_KEYS | _OPTIONAL_KEYS
 
 
 def is_valid_api(api):
+    """Validate API description.
+
+    Parameters
+    ----------
+    api : dict_like
+        Description of a BMI.
+
+    Returns
+    -------
+    boolean
+        True if a valid description, otherwise False.
+
+    See Also
+    --------
+        is_valid_api_or_raise
+    """
     if not isinstance(api, dict):
-        print 'not a dict'
         return False
 
     found_keys = set(api.keys())
@@ -25,31 +40,68 @@ def is_valid_api(api):
         return False
 
     if not found_keys.issubset(_VALID_KEYS):
-        print 'unknown key'
         return False
 
     return True
 
 
 def is_valid_api_or_raise(api):
+    """Validate API description or raise an exception.
+
+    Parameters
+    ----------
+    api : dict_like
+        Description of a BMI.
+
+    Raises
+    ------
+    RuntimeError on an invalid description.
+
+    See Also
+    --------
+    is_valid_api
+    """
     if not is_valid_api(api):
         raise RuntimeError('invalid api yaml')
 
 
-def generate_compile_opts(flags, opt):
+def pkg_config(package, opt):
+    """Use pkg-config to get compile options.
+
+    Parameters
+    ----------
+    package : str
+        Name of pkg-config package.
+    opt : {'--cflags', '--libs'}
+        Options for pkg-config.
+
+    Returns
+    -------
+    str
+        Compiler flags.
+    """
     assert(opt in ['--cflags', '--libs'])
 
-    if isinstance(flags, types.StringTypes):
-        return flags
-
-    try:
-        return check_output(['pkg-config', opt,
-                             flags['pkgconfig']]).strip()
-    except KeyError:
-        raise TypeError('bad type for flags')
+    return check_output(['pkg-config', opt, package]).strip()
 
 
 def load(dir='.'):
+    """Load an api description from a file.
+
+    Parameters
+    ----------
+    dir : str, optional
+        Path to folder that contains description file.
+
+    Returns
+    -------
+    dict
+        Description of the API.
+
+    Raises
+    ------
+    RuntimeError is the description is invalid.
+    """
     with cd(dir):
         with open(os.path.join('.bmi', 'api.yaml'), 'r') as fp:
             api = yaml.load(fp)
@@ -58,13 +110,34 @@ def load(dir='.'):
 
     api.pop('build')
 
-    api['cflags'] = generate_compile_opts(api['cflags'], '--cflags')
-    api['libs'] = generate_compile_opts(api['libs'], '--libs')
+    cflags = api['cflags']
+    if isinstance(cflags, dict) and 'pkgconfig' in cflags:
+        api['cflags'] = pkg_config(cflags['pkgconfig'], '--cflags')
+
+    libs = api['libs']
+    if isinstance(libs, dict) and 'pkgconfig' in libs:
+        api['libs'] = pkg_config(cflags['pkgconfig'], '--libs')
 
     return api
 
 
 def load_build_script(dir='.'):
+    """Load a build script for an API description file.
+
+    Paramters
+    ---------
+    dir : str, optional
+        Path to folder that contains description file.
+
+    Returns
+    -------
+    dict
+        Build description
+
+    Raises
+    ------
+    RuntimeError is the build is not a supported build type.
+    """
     with cd(dir):
         with open(os.path.join('.bmi', 'api.yaml'), 'r') as fp:
             api = yaml.load(fp)
@@ -78,6 +151,13 @@ def load_build_script(dir='.'):
 
 
 def execute_build(build):
+    """Build an API from a description.
+
+    Parameters
+    ----------
+    build : dict
+        Build description.
+    """
     brew = build['brew']
     opts = brew.get('options', [])
 
@@ -88,5 +168,12 @@ def execute_build(build):
 
 
 def execute_api_build(dir='.'):
+    """Build an API from a file.
+
+    Parameters
+    ----------
+    dir : str, optional
+        Path to folder that contains description file.
+    """
     build = load_build_script(dir=dir)
     execute_build(build)
