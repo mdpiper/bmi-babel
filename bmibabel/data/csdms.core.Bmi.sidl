@@ -23,45 +23,49 @@ package csdms version 0.0 {
             bool update(in double time_interval);	            	
             bool finalize();	            	
             
-            double get_start_time();	            	
-            double get_current_time();	            	
-            double get_end_time();	            	
+            int get_start_time(out double time);
+            int get_current_time(out double time);
+            int get_end_time(out double time);
 
-            //array<> get_values(in string long_var_name);	            	
-            //void set_values(in string long_var_name, in array<> in_values);	            	
+            int get_component_name(out string name);
+            int get_input_item_count(out int count);
+            int get_output_item_count(out int count);
+            int get_input_var_names(out array<string, 1> names);
+            int get_output_var_names(out array<string, 1> names);
 
-            string get_component_name();	            	
-            int get_input_item_count();	            	
-            array<string> get_input_item_list();	            	
-
-            int get_output_item_count();	            	
-            array<string> get_output_item_list();	            	
-
-            //array<> get_values_at_indices(in string long_var_name, in array<int> indices);	            	
-            //void set_values_at_indices(in string long_var_name, in array<int> indices, in array<> in_values);	            	
+            int get_var_type(in string name, out string type);
+            int get_var_units(in string name, out string units);
+            int get_var_nbytes(in string name, out int nbytes);
+            int get_var_itemsize(in string name, out int size);
+            int get_var_grid(in string name, out int grid);
 
             // Grid information
-            int get_grid_rank(in string long_var_name);	            	
+            int get_grid_type(in int grid, out string type);
+            int get_grid_rank(in int grid, out int rank);
+            int get_grid_size(in int grid, out int size);
 
             // Uniform rectilinear
-            array<double, 1> get_grid_spacing(in string long_var_name);	            	
-            array<double, 1> get_grid_origin(in string long_var_name);	            	
-            array<int, 1> get_grid_shape(in string long_var_name);	            	
+            int get_grid_shape(in int grid, in array<int, 1> shape);
+            int get_grid_spacing(in int grid, in array<int, 1> spacing);
+            int get_grid_origin(in int grid, in array<int, 1> origin);
 
             // Non-uniform rectilinear, curvilinear
-            array<double, 1> get_grid_x(in string long_var_name);	            	
-            array<double, 1> get_grid_y(in string long_var_name);	            	
-            array<double, 1> get_grid_z(in string long_var_name);	            	
+            int get_grid_x(in int grid, in array<double, 1> x);
+            int get_grid_y(in int grid, in array<double, 1> y);
+            int get_grid_z(in int grid, in array<double, 1> z);
 
             // Unstructured
-            array<int, 1> get_grid_connectivity(in string long_var_name);
-            array<int, 1> get_grid_offset(in string long_var_name);
+            int get_grid_connectivity(in int grid, in array<int, 1> connectivity);
+            int get_grid_offset(in int grid, in array<int, 1> offset);
             
-            //array<double, 1> get_grid_values(in string long_var_name);
-            //array<double, 1> get_grid_values(in string long_var_name,
-            //                                 inout array<> values);
-            array<> get_grid_values(in string long_var_name, in array<> values);
-            void set_grid_values(in string long_var_name, in array<double, 1> vals);	            	
+            int get_value(in string name, in array<> dest);
+            int get_value_ptr(in string name, out array<> values);
+            int get_value_at_indices(in string name, in array<> dest,
+                in array<int, 1> inds);
+
+            int set_value(in string name, in array<> values);
+            int set_value_at_indices(in string name, in array<int, 1> inds,
+                in array<> src);
 
             // DO-NOT-DELETE bocca.splicer.end(csdms.core.Bmi.methods)
         }
