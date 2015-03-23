@@ -3,14 +3,20 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to BMI-Babel's documentation!
-=====================================
+Babel-ize BMI components
+========================
 
-Contents:
+:Release: |release|
+:Date: |today|
+
+Contents
+========
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
+    Create BMI language bindings <bmibabel.cmd.make>
+    Get BMI descriptions from GitHub <bmibabel.cmd.fetch>
 
 
 Indices and tables
