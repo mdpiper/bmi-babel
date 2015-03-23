@@ -22,6 +22,8 @@ _PATH_TO_IMPL = {
     'python': os.path.join(_THIS_DIR, 'data', 'py.Component'),
 }
 
+_PATH_TO_SIDL = os.path.join(_THIS_DIR, 'data')
+
 
 class Error(Exception):
     pass
@@ -62,8 +64,11 @@ class Bocca(object):
         system([self.bocca, 'create', 'project', name] + options)
 
     def create_interface(self, name, sidl=None):
+        if sidl is None or sidl is True:
+            sidl = os.path.join(_PATH_TO_SIDL, name + '.sidl')
+
         options = []
-        if sidl is not None:
+        if isinstance(sidl, types.StringTypes):
             options += ['--import-sidl=%s@%s' % (name, sidl)]
 
         system([self.bocca, 'create', 'interface', name] + options)
