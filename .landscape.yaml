@@ -3,5 +3,8 @@ ignore-patterns:
   - setup.py
   - conf.py
   - (^|/)data(/|$)
+ignore-paths:
+  - docs
+  - examples
 strictness: veryhigh
 doc-warnings: True
