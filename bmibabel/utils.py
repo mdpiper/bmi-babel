@@ -150,8 +150,8 @@ def which(prog, env=None):
     *env* is the name of a environment variable that may give the path to
     the program.
 
-    Paramters
-    ---------
+    Parameters
+    ----------
     prog : str
         Name of a program.
     env : str

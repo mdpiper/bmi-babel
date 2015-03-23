@@ -126,8 +126,8 @@ def load(dir='.'):
 def load_build_script(dir='.'):
     """Load a build script for an API description file.
 
-    Paramters
-    ---------
+    Parameters
+    ----------
     dir : str, optional
         Path to folder that contains description file.
 

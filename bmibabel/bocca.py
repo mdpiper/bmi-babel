@@ -62,8 +62,8 @@ class Bocca(object):
     def create_project(self, name, language=None, ifexists='raise'):
         """Create a new bocca project.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         name : str
             Name of the new bocca project.
         language : str, optional
@@ -89,8 +89,8 @@ class Bocca(object):
     def create_interface(self, name, sidl=None):
         """Create a new interface.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         name : str
             Name of the new interface.
         sidl : str, optional
@@ -110,8 +110,8 @@ class Bocca(object):
                      impl=None):
         """Create a new class.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         name : str
             Name of the new interface.
         implements : str, optional
@@ -144,8 +144,8 @@ class Bocca(object):
                          pkg_config_package=None, impl=None):
         """Create a class that implements the Basic Model Interface.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         name : str
             Name of the new interface.
         bmi_mapping : dict_like
