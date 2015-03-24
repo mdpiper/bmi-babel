@@ -15,99 +15,6 @@ from ..project import empty_bmi_project, add_bmi_component
 from .. import api
 
 
-def load_bmi_info(dir):
-    """Load a BMI info file.
-
-    Parameters
-    ----------
-    dir : str
-        Path to model that contains a BMI description.
-
-    Returns
-    -------
-    dict
-        Description of the BMI model.
-    """
-    with cd(dir):
-        with open(os.path.join('.bmi', 'info.yaml'), 'r') as fp:
-            info = yaml.load(fp)
-
-        if 'summary' not in info:
-            info['summary'] = read_first_of(['README.md', 'README',
-                                             'README.txt']).strip()
-
-        if 'license' not in info:
-            info['license'] = read_first_of(['LICENSE', 'LICENSE.txt']).strip()
-
-    return info
-
-
-def load_bmi_api(dir='.'):
-    """Load an API description file.
-
-    Parameters
-    ----------
-    dir : str, optional
-        Path to model that contains a BMI description.
-
-    Returns
-    -------
-    dict
-        Description of the model API.
-    """
-    with cd(dir):
-        with open(os.path.join('.bmi', 'api.yaml'), 'r') as fp:
-            api = yaml.load(fp)
-    api.pop('build')
-
-    if isinstance(api['cflags'], dict) and 'pkgconfig' in api['cflags']:
-        api['cflags'] = check_output(['pkg-config', '--cflags',
-                                      api['cflags']['pkgconfig']]).strip()
-
-    if isinstance(api['libs'], dict) and 'pkgconfig' in api['libs']:
-        api['libs'] = check_output(['pkg-config', '--libs',
-                                    api['libs']['pkgconfig']]).strip()
-
-    return api
-
-
-def load_build_script(dir='.'):
-    """Load a BMI build script.
-
-    Parameters
-    ----------
-    dir : str, optional
-        Path to model that contains a BMI description.
-
-    Returns
-    -------
-    dict
-        Build description.
-    """
-    with cd(dir):
-        with open(os.path.join('.bmi', 'api.yaml'), 'r') as fp:
-            api = yaml.load(fp)
-    return api['build']
-
-
-def build_api(build):
-    """Build the API from a script.
-
-    Parameters
-    ----------
-    build : dict
-        Build description.
-    """
-    if isinstance(build, dict) and 'brew' in build:
-        brew = build['brew']
-        opts = brew.get('options', [])
-        if isinstance(opts, types.StringTypes):
-            opts = [opts]
-        system(['brew', 'install', brew['formula']] + opts)
-    else:
-        raise RuntimeError('only building with homebrew is supported')
-
-
 def cache_dir_from_repo(repo, branch='master'):
     """Name of cache directory for a git repository.
 
@@ -166,6 +73,7 @@ def parse_repo_line(line):
         repo, branch = line, 'master'
 
     return repo.strip(), branch.strip()
+
 
 def main():
     import argparse
