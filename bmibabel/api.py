@@ -10,9 +10,8 @@ from .utils import cd, check_output, system
 from .git import git_repo_name, git_clone_or_update, git_repo_sha
 
 
-_REQUIRED_KEYS = set(['language', 'build', 'includes', 'cflags', 'libs',
-                      'grids'])
-_OPTIONAL_KEYS = set(['name', 'type', 'prefix'])
+_REQUIRED_KEYS = set(['language', 'build', 'includes', 'cflags', 'libs'])
+_OPTIONAL_KEYS = set(['name', 'type', 'register'])
 _VALID_KEYS = _REQUIRED_KEYS | _OPTIONAL_KEYS
 
 
