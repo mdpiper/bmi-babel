@@ -8,6 +8,7 @@ import yaml
 
 from .utils import cd, check_output, system
 from .git import git_repo_name, git_clone_or_update, git_repo_sha
+from .errors import MissingFileError
 
 
 _REQUIRED_KEYS = set(['language', 'build', 'includes', 'cflags', 'libs'])
@@ -104,8 +105,11 @@ def load(dir='.'):
     RuntimeError is the description is invalid.
     """
     with cd(dir):
-        with open(os.path.join('.bmi', 'api.yaml'), 'r') as fp:
-            api = yaml.load(fp)
+        try:
+            with open(os.path.join('.bmi', 'api.yaml'), 'r') as fp:
+                api = yaml.load(fp)
+        except IOError:
+            raise MissingFileError('api.yaml')
 
     is_valid_api_or_raise(api)
 

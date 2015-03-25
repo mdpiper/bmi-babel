@@ -14,6 +14,7 @@ import yaml
 from distutils.dir_util import mkpath
 
 from .utils import cd, mktemp, which, system, check_output
+from .errors import ProjectExistsError
 
 
 _THIS_DIR = os.path.dirname(__file__)
@@ -25,24 +26,6 @@ _PATH_TO_IMPL = {
 }
 
 _PATH_TO_SIDL = os.path.join(_THIS_DIR, 'data')
-
-
-class Error(Exception):
-
-    """Base exception class for this module."""
-
-    pass
-
-
-class ProjectExistsError(Error):
-
-    """Raise this exception for an already existing project."""
-
-    def __init__(self, name):
-        self._name = name
-
-    def __str__(self):
-        return self._name
 
 
 class Bocca(object):
