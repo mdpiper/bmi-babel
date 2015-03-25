@@ -15,7 +15,7 @@ from ..project import empty_bmi_project, add_bmi_component
 from .. import api
 
 
-def cache_dir_from_repo(repo, branch='master'):
+def _cache_dir_from_repo(repo, branch='master'):
     """Name of cache directory for a git repository.
 
     Parameters
@@ -34,7 +34,7 @@ def cache_dir_from_repo(repo, branch='master'):
                                  '-%s' % git_repo_sha(repo, branch=branch))
 
 
-def component_name_from_repo(repo, name=None):
+def _component_name_from_repo(repo, name=None):
     """Get fully-qualified component name from repository name.
 
     Parameters
@@ -54,7 +54,7 @@ def component_name_from_repo(repo, name=None):
     return '.'.join(['model', name])
 
 
-def parse_repo_line(line):
+def _parse_repo_line(line):
     """Parse a line containing the location of a BMI repository.
 
     Parameters
@@ -86,9 +86,9 @@ def main():
 
     proj = empty_bmi_project()
     for repo in args.repo:
-        repo, branch = parse_repo_line(repo)
+        repo, branch = _parse_repo_line(repo)
 
-        cache_dir = cache_dir_from_repo(repo, branch=branch)
+        cache_dir = _cache_dir_from_repo(repo, branch=branch)
 
         git_clone_or_update(repo, dir=cache_dir, branch=branch)
 
@@ -96,7 +96,7 @@ def main():
             bmi = api.load()
             api.execute_api_build()
 
-        bmi['name'] = component_name_from_repo(repo, bmi.get('name', None))
+        bmi['name'] = _component_name_from_repo(repo, bmi.get('name', None))
 
         add_bmi_component(proj, bmi)
 
