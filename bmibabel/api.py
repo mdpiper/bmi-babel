@@ -8,46 +8,18 @@ import yaml
 
 from .utils import cd, check_output, system
 from .git import git_repo_name, git_clone_or_update, git_repo_sha
-from .errors import MissingFileError
+from .errors import (MissingFileError, ParseError, MissingKeyError,
+                     UnknownKeyError)
+from . import build
 
 
-_REQUIRED_KEYS = set(['language', 'build', 'includes', 'cflags', 'libs'])
-_OPTIONAL_KEYS = set(['name', 'type', 'register'])
+_REQUIRED_KEYS = set(['language', 'build', ])
+_OPTIONAL_KEYS = set(['name', 'type', 'register', 'class', 'package',
+                      'libs', 'cflags', 'includes'])
 _VALID_KEYS = _REQUIRED_KEYS | _OPTIONAL_KEYS
 
 
-def is_valid_api(api):
-    """Validate API description.
-
-    Parameters
-    ----------
-    api : dict_like
-        Description of a BMI.
-
-    Returns
-    -------
-    boolean
-        True if a valid description, otherwise False.
-
-    See Also
-    --------
-        is_valid_api_or_raise
-    """
-    if not isinstance(api, dict):
-        return False
-
-    found_keys = set(api.keys())
-
-    if not found_keys.issuperset(_REQUIRED_KEYS):
-        return False
-
-    if not found_keys.issubset(_VALID_KEYS):
-        return False
-
-    return True
-
-
-def is_valid_api_or_raise(api):
+def validate_api(api):
     """Validate API description or raise an exception.
 
     Parameters
@@ -57,14 +29,22 @@ def is_valid_api_or_raise(api):
 
     Raises
     ------
-    RuntimeError on an invalid description.
-
-    See Also
-    --------
-    is_valid_api
+    ParseError on an invalid description.
+    MissingKeyError if a required key is missing
+    UnknownKeyError if an unknown key is found
     """
-    if not is_valid_api(api):
-        raise RuntimeError('invalid api yaml')
+    if not isinstance(api, dict):
+        raise ParseError('object is not a dictionary')
+
+    found_keys = set(api.keys())
+
+    if not found_keys.issuperset(_REQUIRED_KEYS):
+        raise MissingKeyError(_REQUIRED_KEYS - found_keys)
+
+    if not found_keys.issubset(_VALID_KEYS):
+        raise UnknownKeyError(found_keys - _VALID_KEYS)
+
+    return True
 
 
 def pkg_config(package, opt):
@@ -111,65 +91,22 @@ def load(dir='.'):
         except IOError:
             raise MissingFileError('api.yaml')
 
-    is_valid_api_or_raise(api)
+    validate_api(api)
 
     api.pop('build')
 
-    cflags = api['cflags']
-    if isinstance(cflags, dict) and 'pkgconfig' in cflags:
-        api['cflags'] = pkg_config(cflags['pkgconfig'], '--cflags')
+    if api['language'] == 'c':
+        cflags = api['cflags']
+        if isinstance(cflags, dict) and 'pkgconfig' in cflags:
+            api['cflags'] = pkg_config(cflags['pkgconfig'], '--cflags')
 
-    libs = api['libs']
-    if isinstance(libs, dict) and 'pkgconfig' in libs:
-        api['libs'] = pkg_config(cflags['pkgconfig'], '--libs')
+        libs = api['libs']
+        if isinstance(libs, dict) and 'pkgconfig' in libs:
+            api['libs'] = pkg_config(cflags['pkgconfig'], '--libs')
+    elif api['language'] == 'python':
+        pass
 
     return api
-
-
-def load_build_script(dir='.'):
-    """Load a build script for an API description file.
-
-    Parameters
-    ----------
-    dir : str, optional
-        Path to folder that contains description file.
-
-    Returns
-    -------
-    dict
-        Build description
-
-    Raises
-    ------
-    RuntimeError is the build is not a supported build type.
-    """
-    with cd(dir):
-        with open(os.path.join('.bmi', 'api.yaml'), 'r') as fp:
-            api = yaml.load(fp)
-
-    is_valid_api_or_raise(api)
-
-    if isinstance(api['build'], dict) and 'brew' in api['build']:
-        return api['build']
-    else:
-        raise RuntimeError('only building with homebrew is supported')
-
-
-def execute_build(build):
-    """Build an API from a description.
-
-    Parameters
-    ----------
-    build : dict
-        Build description.
-    """
-    brew = build['brew']
-    opts = brew.get('options', [])
-
-    if isinstance(opts, types.StringTypes):
-        opts = [opts]
-
-    system(['brew', 'install', brew['formula']] + opts)
 
 
 def execute_api_build(dir='.'):
@@ -180,5 +117,4 @@ def execute_api_build(dir='.'):
     dir : str, optional
         Path to folder that contains description file.
     """
-    build = load_build_script(dir=dir)
-    execute_build(build)
+    build.execute_build(build.load_script(dir=dir))
