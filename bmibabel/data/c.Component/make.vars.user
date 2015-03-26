@@ -6,10 +6,10 @@
 # bocca config CLASSNAME --var=VARUSER --value=VALUE
 # --------------------------------------------------------------
 # Include path directives, including paths to Fortran modules
-INCLUDES = 
+INCLUDES =  ${bmi_cflags}
 
 # Library paths and names, binaries
-LIBS = 
+LIBS = ${bmi_libs}
 
 # java 
 CLASSPATH_USER=
