@@ -1,10 +1,13 @@
 #! /usr/bin/env python
 """Fetch remote BMI models."""
+from __future__ import print_function
 
 import os
+import sys
 import subprocess
 import re
 import types
+import warnings
 
 import yaml
 from distutils.dir_util import mkpath
@@ -13,6 +16,7 @@ from ..utils import cd, check_output, system, read_first_of
 from ..git import git_repo_name, git_clone_or_update, git_repo_sha
 from ..project import empty_bmi_project, add_bmi_component
 from .. import api
+from ..errors import MissingFileError, ParseError
 
 
 def _cache_dir_from_repo(repo, branch='master'):
@@ -75,6 +79,25 @@ def _parse_repo_line(line):
     return repo.strip(), branch.strip()
 
 
+def _get_bmi_from_repo(repo):
+    if repo.startswith('http'):
+        repo, branch = _parse_repo_line(repo)
+
+        cache_dir = _cache_dir_from_repo(repo, branch=branch)
+
+        git_clone_or_update(repo, dir=cache_dir, branch=branch)
+    else:
+        cache_dir = repo
+
+    with cd(cache_dir) as _:
+        bmi = api.load()
+        api.execute_api_build()
+
+    bmi['name'] = _component_name_from_repo(repo, bmi.get('name', None))
+
+    return bmi
+
+
 def main():
     import argparse
     parser = argparse.ArgumentParser()
@@ -86,21 +109,16 @@ def main():
 
     proj = empty_bmi_project()
     for repo in args.repo:
-        repo, branch = _parse_repo_line(repo)
+        try:
+            add_bmi_component(proj, _get_bmi_from_repo(repo))
+        except MissingFileError as err:
+            print('Skipping %s: missing file (%s)' % (repo, err),
+                  file=sys.stderr)
+        except ParseError as err:
+            print('Skipping %s: parse error (%s)' % (repo, err),
+                  file=sys.stderr)
 
-        cache_dir = _cache_dir_from_repo(repo, branch=branch)
-
-        git_clone_or_update(repo, dir=cache_dir, branch=branch)
-
-        with cd(cache_dir) as _:
-            bmi = api.load()
-            api.execute_api_build()
-
-        bmi['name'] = _component_name_from_repo(repo, bmi.get('name', None))
-
-        add_bmi_component(proj, bmi)
-
-    print yaml.dump(proj, default_flow_style=False)
+    print('%s' % yaml.dump(proj, default_flow_style=False), file=sys.stdout)
 
 
 if __name__ == '__main__':
