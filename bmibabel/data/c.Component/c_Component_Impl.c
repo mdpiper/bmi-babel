@@ -123,9 +123,10 @@ impl_c_Component__ctor(
    c_Component__set_data(self, dptr);
 
    {
-     BMI_Model * model = GET_BMI_MODEL(self);
-     model = (BMI_Model*) calloc(1, sizeof(BMI_Model));
+     dptr->state = (BMI_Model*) calloc(1, sizeof(BMI_Model));
+     ${bmi_register} (dptr->state);
    }
+
    #if _BOCCA_CTOR_MESSAGES
      BOCCA_FPRINTF(stderr, 
         "CTOR c.Component: %s constructed data %p in self %p\n", 
@@ -257,7 +258,7 @@ impl_c_Component_initialize(
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.initialize) */
     BMI_Model * model = GET_BMI_MODEL(self);
-    model->initialize(config_file, &(model->self))
+    model->initialize(config_file, &(model->self));
 
     return 0;
 
@@ -430,7 +431,7 @@ impl_c_Component_get_component_name(
     BMI_Model * model = GET_BMI_MODEL(self);
     *name = (char*)malloc(sizeof(char) * 2048);
 
-    model->get_component_name(model->self, name);
+    model->get_component_name(model->self, *name);
     return 0;
 
   EXIT:
@@ -518,7 +519,7 @@ impl_c_Component_get_input_var_names(
     BMI_Model * model = GET_BMI_MODEL(self);
     int number_of_names = 0;
 
-    model->get_input_var_count(model->self, &number_of_names);
+    model->get_input_var_name_count(model->self, &number_of_names);
     *names = sidl_string__array_create1d(number_of_names);
 
     {
@@ -534,7 +535,7 @@ impl_c_Component_get_input_var_names(
       model->get_input_var_names(model->self, item_names);
 
       for (i = 0; i < number_of_names; i ++) {
-        sidl_string__array_set1(names, i, item_names[i]);
+        sidl_string__array_set1(*names, i, item_names[i]);
       }
       free(item_names);
     }
@@ -568,7 +569,7 @@ impl_c_Component_get_output_var_names(
     BMI_Model * model = GET_BMI_MODEL(self);
     int number_of_names = 0;
 
-    model->get_output_var_count(model->self, &number_of_names);
+    model->get_output_var_name_count(model->self, &number_of_names);
     *names = sidl_string__array_create1d(number_of_names);
 
     {
@@ -584,7 +585,7 @@ impl_c_Component_get_output_var_names(
       model->get_output_var_names(model->self, item_names);
 
       for (i = 0; i < number_of_names; i ++) {
-        sidl_string__array_set1(names, i, item_names[i]);
+        sidl_string__array_set1(*names, i, item_names[i]);
       }
       free(item_names);
     }
@@ -708,7 +709,17 @@ impl_c_Component_get_var_itemsize(
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.get_var_itemsize) */
     BMI_Model * model = GET_BMI_MODEL(self);
-    model->get_var_itemsize(model->self, name, size);
+    {
+      int grid;
+      int n_values;
+      int nbytes;
+
+      model->get_var_nbytes(model->self, name, &nbytes);
+      model->get_var_grid(model->self, name, &grid);
+      model->get_grid_size(model->self, grid, &n_values);
+
+      *size = nbytes / n_values;
+    }
     return 0;
   EXIT:
     return -1;
@@ -1150,8 +1161,8 @@ impl_c_Component_get_value_ptr(
 
     model->get_value_ptr(model->self, name, &buffer);
     model->get_var_type(model->self, name, type);
-    model->get_var_grid(grid, &grid);
-    model->get_grid_size(grid, &size);
+    model->get_var_grid(model->self, name, &grid);
+    model->get_grid_size(model->self, grid, &size);
     
     {
       const int n_dims = 1;
@@ -1160,11 +1171,11 @@ impl_c_Component_get_value_ptr(
       const int stride[1] = {1};
 
       if (strcmp(type, "double") == 0) {
-        *values = (struct sidl__array*)sidl_double__array_borrow(data, n_dims,
-            lower, upper, stride);
+        *values = (struct sidl__array*)sidl_double__array_borrow(
+            (double*)buffer, n_dims, lower, upper, stride);
       } else if (strcmp(type, "int") == 0) {
-        *values = (struct sidl__array*)sidl_int__array_borrow(data, n_dims,
-            lower, upper, stride);
+        *values = (struct sidl__array*)sidl_int__array_borrow(
+            (int*)buffer, n_dims, lower, upper, stride);
       }
     }
 
@@ -1210,7 +1221,7 @@ impl_c_Component_get_value_at_indices(
 
     {
       int *inds_start = sidl_int__array_first(inds);
-      int len = sidl_int__array_size(inds);
+      int len = sidl_int__array_length(inds, 0);
 
       model->get_value_at_indices(model->self, name, buffer, inds_start, len);
     }
@@ -1248,9 +1259,9 @@ impl_c_Component_set_value(
     model->get_var_type(model->self, name, type);
     
     if (strcmp(type, "double") == 0) {
-      buffer = sidl_double__array_first((struct sidl_double__array*)src);
+      buffer = sidl_double__array_first((struct sidl_double__array*)values);
     } else if (strcmp(type, "int") == 0) {
-      buffer = sidl_int__array_first((struct sidl_int__array*)src);
+      buffer = sidl_int__array_first((struct sidl_int__array*)values);
     }
 
     model->set_value(model->self, name, buffer);
@@ -1296,7 +1307,7 @@ impl_c_Component_set_value_at_indices(
 
     {
       int *inds_start = sidl_int__array_first(inds);
-      int len = sidl_int__array_size(inds);
+      int len = sidl_int__array_length(inds, 0);
 
       model->set_value_at_indices(model->self, name, inds_start, len, buffer);
     }
