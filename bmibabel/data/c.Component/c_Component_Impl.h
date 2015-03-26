@@ -38,7 +38,7 @@
 ${bmi_includes}
 
 #define _GET_BMI_MODEL(clazz, self) clazz##__get_data(self)->state
-#define GET_BMI_MODEL(self) _GET_BMI_MODEL(csdms_examples_c_Heat, self)
+#define GET_BMI_MODEL(self) _GET_BMI_MODEL(c_Component, self)
 /* DO-NOT-DELETE splicer.end(c.Component._hincludes) */
 
 /*
