@@ -5,6 +5,7 @@ from __future__ import print_function
 import os
 import sys
 import re
+import argparse
 
 import yaml
 
@@ -97,8 +98,6 @@ def _get_bmi_from_repo(repo, prefix='/usr/local'):
 
 def main():
     """Get a remote BMI implementation and build it."""
-
-    import argparse
     parser = argparse.ArgumentParser()
 
     parser.add_argument('repo', type=str, nargs='+',

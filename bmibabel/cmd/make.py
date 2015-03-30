@@ -71,6 +71,7 @@ from ..bocca import make_project, ProjectExistsError
 
 def main():
     """Make language wrappers for BMI implementations."""
+
     parser = argparse.ArgumentParser()
     parser.add_argument('file', type=argparse.FileType('r'),
                         help='Project description file')
