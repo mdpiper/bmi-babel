@@ -249,62 +249,6 @@ def class_files(name, bocca=None, pattern=None):
         return files
 
 
-def replace_class_name(src, dest, include=None, prefix=None, cflags=None,
-                       libs=None):
-    """Replace the name of a class in impl files.
-
-    .. note:: Deprecated.
-
-    Parameters
-    ----------
-    src : str
-        Name of source class.
-    dest : str
-        Name of destination class.
-    """
-    import re
-
-    cflags = cflags or ''
-    libs = libs or ''
-
-    subs = ((re.sub('\.', '_', src), re.sub('\.', '_', dest)),
-            (src, dest),
-            ('BMI_HEAT', prefix),
-            ('bmi_heat.h', include),
-            ('Heat', dest.split('.')[-1]),
-           )
-
-    for path in class_files(dest):
-        f = fileinput.input(path, inplace=True)
-        for line in f:
-            for sub in subs:
-                line = re.sub(sub[0], sub[1], line)
-            if line.startswith('INCLUDES ='):
-                line = ' '.join([line.rstrip(), cflags])
-            elif line.startswith('LIBS ='):
-                line = ' '.join([line.rstrip(), libs])
-
-            print line.rstrip()
-        f.close()
-
-
-def substitute_in_file(file_like, pattern, repl):
-    """
-    .. note:: Deprecated.
-    """
-    if isinstance(file_like, types.StringTypes):
-        with open(file_like, 'r') as fp:
-            contents = fp.read()
-    else:
-        contents = file_like.read()
-
-    return re.sub(pattern, repl, contents)
-
-    if inplace:
-        with open(path, 'w') as fp:
-            fp.write(contents)
-
-
 def substitute_patterns(subs, string):
     """Substitute patterns in a string.
 
@@ -588,21 +532,6 @@ _GRID_TYPE_FUNCTIONS = {
         'get_grid_offset', 'get_grid_connectivity',
     ],
 }
-
-def get_grid_type_defines(grid_types):
-    """
-    .. note:: Deprecated.
-    """
-    if isinstance(grid_types, types.StringTypes):
-        grid_types = [grid_types]
-
-    defines = []
-    for grid_type in grid_types:
-        for func in _GRID_TYPE_FUNCTIONS[grid_type]:
-            defines.append('#define BMI_HAS_%s' % func.upper())
-
-    return os.linesep.join(defines)
-
 
 def get_interfaces(proj):
     """Get interfaces in a project description.
