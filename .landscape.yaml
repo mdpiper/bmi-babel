@@ -6,5 +6,5 @@ ignore-patterns:
 ignore-paths:
   - docs
   - examples
-strictness: medium
+strictness: high
 doc-warnings: True
