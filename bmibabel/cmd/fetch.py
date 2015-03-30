@@ -8,7 +8,7 @@ import re
 
 import yaml
 
-from ..utils import cd, check_output, read_first_of
+from ..utils import cd, read_first_of
 from ..git import git_repo_name, git_clone_or_update, git_repo_sha
 from ..project import empty_bmi_project, add_bmi_component
 from .. import api

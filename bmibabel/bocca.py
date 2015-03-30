@@ -2,10 +2,8 @@
 """Some bocca utilities."""
 
 import os
-import subprocess
 import types
 import re
-import fileinput
 import shutil
 import glob
 from string import Template

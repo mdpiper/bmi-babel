@@ -6,7 +6,7 @@ import os
 import yaml
 
 from .utils import cd, check_output
-from .git import git_repo_name, git_clone_or_update
+from .git import git_clone_or_update
 from .errors import (MissingFileError, ParseError, MissingKeyError,
                      UnknownKeyError)
 from . import build
