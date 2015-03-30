@@ -78,6 +78,20 @@ def _parse_repo_line(line):
 
 
 def _get_bmi_from_repo(repo, prefix='/usr/local'):
+    """Get BMI description from a git repository.
+
+    Parameters
+    ----------
+    repo : str
+        url or path to repository.
+    prefix : str
+        Path to installation prefix for BMI implementation
+
+    Returns
+    -------
+    dict
+        BMI description.
+    """
     if repo.startswith('http'):
         repo, branch = _parse_repo_line(repo)
 
