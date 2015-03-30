@@ -445,25 +445,6 @@ def dup_py_impl(path, new, destdir='.'):
 
     return os.path.join(destdir, new)
 
-    #impl_files = (glob.glob(os.path.join(path, '*.[ch]')) +
-    #              glob.glob(os.path.join(path, 'make.*.user')))
-
-    #impl_files = []
-    shutil.copytree(path, os.path.join(destdir, new))
-
-    #with cd(path) as base:
-    #    for fname in os.listdir(path):
-    #        if not fname.startswith('.'):
-    #            if os.path.isdir(fname):
-    #                shutil.copytree(fname, os.path.join(destdir, fname))
-    #            else:
-    #                shutil.copy(fname, destdir)
-
-    #with cd(os.path.join(destdir, new)) as _:
-    #    replace_c_class_names(impl_files, old, new, inplace=False)
-
-    return os.path.join(destdir, new)
-
 
 def dup_cxx_impl(path, new, destdir='.'):
     old = os.path.basename(path)
