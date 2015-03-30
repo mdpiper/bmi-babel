@@ -419,6 +419,22 @@ def copy_class(src, dest, bocca=None):
 
 
 def dup_c_impl(path, new, destdir='.'):
+    """Duplicate C implementation files.
+
+    Parameters
+    ----------
+    path : str
+        Path to directory containing source impl files.
+    new : str
+        Name of new class.
+    destdir : str, optional
+        Path to directory to put duplicated impl files.
+
+    Returns
+    -------
+    str
+        Path to new implementation files.
+    """
     old = os.path.basename(path)
 
     impl_files = (glob.glob(os.path.join(path, '*.[ch]')) +
@@ -431,6 +447,22 @@ def dup_c_impl(path, new, destdir='.'):
 
 
 def dup_py_impl(path, new, destdir='.'):
+    """Duplicate Python implementation files.
+
+    Parameters
+    ----------
+    path : str
+        Path to directory containing source impl files.
+    new : str
+        Name of new class.
+    destdir : str, optional
+        Path to directory to put duplicated impl files.
+
+    Returns
+    -------
+    str
+        Path to new implementation files.
+    """
     old = os.path.basename(path)
 
     impl_files = (glob.glob(os.path.join(path, '*.py')) +
@@ -443,6 +475,22 @@ def dup_py_impl(path, new, destdir='.'):
 
 
 def dup_cxx_impl(path, new, destdir='.'):
+    """Duplicate C++ implementation files.
+
+    Parameters
+    ----------
+    path : str
+        Path to directory containing source impl files.
+    new : str
+        Name of new class.
+    destdir : str, optional
+        Path to directory to put duplicated impl files.
+
+    Returns
+    -------
+    str
+        Path to new implementation files.
+    """
     old = os.path.basename(path)
 
     impl_files = (glob.glob(os.path.join(path, '*.cxx')) +
@@ -456,6 +504,24 @@ def dup_cxx_impl(path, new, destdir='.'):
 
 
 def dup_impl_files(path, new, destdir='.', language=None):
+    """Duplicate implementation files.
+
+    Parameters
+    ----------
+    path : str
+        Path to directory containing source impl files.
+    new : str
+        Name of new class.
+    destdir : str, optional
+        Path to directory to put duplicated impl files.
+    language : {'c', 'cxx', 'python'}, optional
+        Language of the implementation.
+
+    Returns
+    -------
+    str
+        Path to new implementation files.
+    """
     language = language or guess_language_from_files(path)
 
     if language == 'c':

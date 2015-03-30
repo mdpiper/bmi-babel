@@ -42,6 +42,18 @@ def load_script(dir='.'):
 
 
 def brew_install_instructions(brewer):
+    """Shell commands to install a formula with Homebrew.
+
+    Parameters
+    ----------
+    brewer : dict
+        Description of Homebrew formula.
+
+    Returns
+    -------
+    list
+        Shell commands needed to install the formula.
+    """
     opts = brewer.get('options', [])
     formula = brewer['formula']
 
@@ -52,6 +64,18 @@ def brew_install_instructions(brewer):
 
 
 def bash_install_instructions(script):
+    """Shell commands to install something.
+
+    Parameters
+    ----------
+    script : str or iterable
+        Shell commands as a string or a list of strings.
+
+    Returns
+    -------
+    list
+        Shell commands.
+    """
     if isinstance(script, types.StringTypes):
         return [script]
     else:

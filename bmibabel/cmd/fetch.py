@@ -95,6 +95,8 @@ def _get_bmi_from_repo(repo, prefix='/usr/local'):
 
 
 def main():
+    """Get a remote BMI implementation and build it."""
+
     import argparse
     parser = argparse.ArgumentParser()
 

@@ -1,9 +1,13 @@
+"""Duplicate implementations files."""
+
 import argparse
 
 from .bocca import dup_c_impl
 
 
 def main():
+    """Duplicate implementations files."""
+
     parser = argparse.ArgumentParser()
     parser.add_argument('path', help='Path to impl files')
     parser.add_argument('name', help='Name of new class')
