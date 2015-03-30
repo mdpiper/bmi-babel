@@ -79,13 +79,11 @@ def git_clone(url, git=None, dir='.', branch='master'):
                 'origin/{branch}'.format(branch=branch)])
 
 
-def git_pull(url, dir='.', branch='master', git=None):
+def git_pull(dir='.', branch='master', git=None):
     """Pull from a git repository.
 
     Parameters
     ----------
-    url : str
-        URL of a git repository.
     git : str, optional
         Path to the git program.
     dir : str, optional
@@ -120,7 +118,7 @@ def git_clone_or_update(url, dir='.', branch='master', git=None):
     """
     if os.path.isdir(os.path.join(dir, '.git')):
         status('Updating %s' % url)
-        git_pull(url, dir=dir, branch=branch, git=git)
+        git_pull(dir=dir, branch=branch, git=git)
     else:
         status('Cloning %s' % url)
         git_clone(url, dir=dir, branch=branch, git=git)
