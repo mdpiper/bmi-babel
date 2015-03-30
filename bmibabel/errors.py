@@ -26,7 +26,7 @@ class ProjectExistsError(Error):
 
     def __str__(self):
         """Convert to string.
-        
+
         Returns
         -------
         str
@@ -51,7 +51,7 @@ class MissingFileError(Error):
 
     def __str__(self):
         """Convert to string.
-        
+
         Returns
         -------
         str
@@ -76,7 +76,7 @@ class ParseError(Error):
 
     def __str__(self):
         """Convert to string.
-        
+
         Returns
         -------
         str
@@ -103,7 +103,7 @@ class MissingKeyError(ParseError):
 
     def __str__(self):
         """Convert to string.
-        
+
         Returns
         -------
         str
@@ -118,7 +118,7 @@ class UnknownKeyError(MissingKeyError):
 
     def __str__(self):
         """Convert to string.
-        
+
         Returns
         -------
         str
