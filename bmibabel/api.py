@@ -62,9 +62,9 @@ def prepend_env_path(path_var, path, env=None):
     env = env or os.environ
 
     try:
-        env[path_var] = os.path.sep.join(path, env[path_var])
+        env[path_var] = os.path.sep.join([path, env[path_var]])
     except KeyError:
-        env[path_var] = env[path_var]
+        env[path_var] = path
 
 
 def pkg_config(package, opt):
@@ -136,7 +136,7 @@ def load(dir='.'):
     return api
 
 
-def execute_api_build(dir='.'):
+def execute_api_build(dir='.', prefix='/usr/local'):
     """Build an API from a file.
 
     Parameters
@@ -144,4 +144,4 @@ def execute_api_build(dir='.'):
     dir : str, optional
         Path to folder that contains description file.
     """
-    build.execute_build(build.load_script(dir=dir))
+    build.execute_build(build.load_script(dir=dir), prefix=prefix)

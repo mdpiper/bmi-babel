@@ -79,7 +79,7 @@ def _parse_repo_line(line):
     return repo.strip(), branch.strip()
 
 
-def _get_bmi_from_repo(repo):
+def _get_bmi_from_repo(repo, prefix='/usr/local'):
     if repo.startswith('http'):
         repo, branch = _parse_repo_line(repo)
 
@@ -90,7 +90,7 @@ def _get_bmi_from_repo(repo):
         cache_dir = repo
 
     with cd(cache_dir) as _:
-        api.execute_api_build()
+        api.execute_api_build(prefix=prefix)
         bmi = api.load()
 
     bmi['name'] = _component_name_from_repo(repo, bmi.get('name', None))
@@ -104,13 +104,16 @@ def main():
 
     parser.add_argument('repo', type=str, nargs='+',
                         help='GitHub repository for BMI implementation')
+    parser.add_argument('--prefix', type=str, default='/usr/local/csdms',
+                        help='Prefix for installation')
 
     args = parser.parse_args()
 
     proj = empty_bmi_project()
     for repo in args.repo:
         try:
-            add_bmi_component(proj, _get_bmi_from_repo(repo))
+            add_bmi_component(proj, _get_bmi_from_repo(repo,
+                                                       prefix=args.prefix))
         except MissingFileError as err:
             print('Skipping %s: missing file (%s)' % (repo, err),
                   file=sys.stderr)

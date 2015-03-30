@@ -58,7 +58,7 @@ def bash_install_instructions(script):
         return script
 
 
-def execute_build(instructions):
+def execute_build(instructions, prefix='/usr/local'):
     """Build an API from a description.
 
     Parameters
@@ -74,6 +74,8 @@ def execute_build(instructions):
 
     #system(['brew', 'install', brew['formula']] + opts)
     import pexpect
+
+    os.environ['CSDMS_PREFIX'] = prefix
 
     child = pexpect.spawn('bash', echo=False)
 
