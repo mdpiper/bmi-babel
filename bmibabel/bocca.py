@@ -90,7 +90,6 @@ class Bocca(object):
 
         system([self.bocca, 'create', 'interface', name] + options)
 
-
     def create_class(self, name, implements=None, language=None, sidl=None,
                      impl=None):
         """Create a new class.
@@ -126,7 +125,7 @@ class Bocca(object):
                             os.path.join('components', name))
 
     def create_bmi_class(self, name, language='c', bmi_mapping=None,
-                         pkg_config_package=None, impl=None):
+                         impl=None):
         """Create a class that implements the Basic Model Interface.
 
         Parameters
@@ -135,8 +134,6 @@ class Bocca(object):
             Name of the new interface.
         bmi_mapping : dict_like
             Substitutions to make in the implementation files.
-        pkg_config_package : str
-            Name of a pkg-config package.
         language : {'c', 'cxx', 'python'}
             Language of the class implementation.
         impl : str, optional
@@ -148,7 +145,7 @@ class Bocca(object):
         if impl is None:
             self.create_class(name, **kwds)
         else:
-            with mktemp(prefix='csdms', suffix='.d') as destdir:
+            with mktemp(prefix='csdms', suffix='.d') as _:
                 kwds['impl'] = make_impl_dir(name, language, subs=bmi_mapping)
                 self.create_class(name, **kwds)
 
