@@ -32,13 +32,10 @@ def load_script(dir='.'):
         with open(os.path.join('.bmi', 'api.yaml'), 'r') as file_like:
             api = yaml.load(file_like)
 
-    #is_valid_api_or_raise(api)
-
     if isinstance(api['build'], dict) and 'brew' in api['build']:
         return brew_install_instructions(api['build']['brew'])
     else:
         return bash_install_instructions(api['build'])
-        #raise RuntimeError('only building with homebrew is supported')
 
 
 def brew_install_instructions(brewer):
