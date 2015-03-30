@@ -90,8 +90,8 @@ def _get_bmi_from_repo(repo):
         cache_dir = repo
 
     with cd(cache_dir) as _:
-        bmi = api.load()
         api.execute_api_build()
+        bmi = api.load()
 
     bmi['name'] = _component_name_from_repo(repo, bmi.get('name', None))
 
