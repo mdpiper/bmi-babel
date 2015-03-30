@@ -29,8 +29,8 @@ def load_script(dir='.'):
     RuntimeError is the build is not a supported build type.
     """
     with cd(dir):
-        with open(os.path.join('.bmi', 'api.yaml'), 'r') as fp:
-            api = yaml.load(fp)
+        with open(os.path.join('.bmi', 'api.yaml'), 'r') as file_like:
+            api = yaml.load(file_like)
 
     #is_valid_api_or_raise(api)
 
@@ -82,6 +82,25 @@ def bash_install_instructions(script):
         return script
 
 
+def render_output_block(output, indent=4):
+    """Format a block of output text.
+
+    Parameters
+    ----------
+    output : str
+        Text to format.
+    indent : int, optional
+        Number of spaces to indent text.
+
+    Returns
+    -------
+    str
+        Formatted text.
+    """
+    lines = output.split(os.linesep)
+    return os.linesep.join([' ' * indent + line for line in lines])
+
+
 def execute_build(instructions, prefix='/usr/local'):
     """Build an API from a description.
 
@@ -90,28 +109,20 @@ def execute_build(instructions, prefix='/usr/local'):
     build : dict
         Build description.
     """
-    #brew = build['brew']
-    #opts = brew.get('options', [])
-
-    #if isinstance(opts, types.StringTypes):
-    #    opts = [opts]
-
-    #system(['brew', 'install', brew['formula']] + opts)
     import pexpect
 
     os.environ['CSDMS_PREFIX'] = prefix
 
     child = pexpect.spawn('bash', echo=False)
 
-    COMMAND_PROMPT = "\[bmi-babel\]\$ "
-    child.sendline("PS1='[bmi-babel]\$ '")
-    child.expect ([pexpect.TIMEOUT, COMMAND_PROMPT], timeout=10)
+    prompt = r"\[bmi-babel\]\$ "
+    child.sendline(r"PS1='[bmi-babel]\$ '")
+    child.expect([pexpect.TIMEOUT, prompt], timeout=10)
 
     for instruction in instructions:
         print('==> %s' % instruction, file=sys.stderr)
         child.sendline(instruction + ' || echo FAIL')
-        i = child.expect ([pexpect.TIMEOUT, COMMAND_PROMPT, 'FAIL'], timeout=10)
-        print(os.linesep.join(['    ' + line for line in child.before.split('\n')]), file=sys.stderr)
+        i = child.expect([pexpect.TIMEOUT, prompt, 'FAIL'], timeout=10)
+        print(render_output_block(child.before), file=sys.stderr)
         if i == 0 or i == 2:
             break
-            #raise RuntimeError(instruction)

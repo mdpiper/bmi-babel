@@ -96,7 +96,9 @@ def git_pull(dir='.', branch='master', git=None):
     with cd(dir):
         system(['git', 'checkout', '-q', branch])
         system(['git', 'pull', 'origin', '-q',
-                'refs/heads/{branch}:refs/remotes/origin/{branch}'.format(branch=branch)])
+                ':'.join([
+                    'refs/heads/{branch}',
+                    'refs/remotes/origin/{branch}']).format(branch=branch)])
 
 
 def git_clone_or_update(url, dir='.', branch='master', git=None):

@@ -8,7 +8,7 @@ import re
 
 import yaml
 
-from ..utils import cd, read_first_of
+from ..utils import cd
 from ..git import git_repo_name, git_clone_or_update, git_repo_sha
 from ..project import empty_bmi_project, add_bmi_component
 from .. import api
@@ -30,8 +30,9 @@ def _cache_dir_from_repo(repo, branch='master'):
     str
         Name of the directory to use for the cache.
     """
-    return os.path.join('cache', git_repo_name(repo) +
-                                 '-%s' % git_repo_sha(repo, branch=branch))
+    cache_dir = '${repo}-${sha}'.format(repo=git_repo_name(repo),
+                                        sha=git_repo_sha(repo, branch=branch))
+    return os.path.join('cache', cache_dir)
 
 
 def _component_name_from_repo(repo, name=None):

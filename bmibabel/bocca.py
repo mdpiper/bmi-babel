@@ -28,6 +28,13 @@ class Bocca(object):
     """Build babel projects with bocca."""
 
     def __init__(self, bocca=None):
+        """Create an instance of a bocca command.
+
+        Parameters
+        ----------
+        bocca : str
+            Path to *bocca* command.
+        """
         self._bocca = bocca or which('bocca')
         if self._bocca is None:
             raise RuntimeError('unable to find bocca')
@@ -210,8 +217,7 @@ def class_language(name, bocca=None):
     bocca = bocca or which('bocca')
 
     lines = check_output([bocca, 'display', 'class', name]).split(os.linesep)
-    m = re.search('\((?P<lang>\w+)\)', lines[0])
-    return m.group('lang')
+    return re.search(r'\((?P<lang>\w+)\)', lines[0]).group('lang')
 
 
 def class_files(name, bocca=None, pattern=None):
@@ -278,8 +284,8 @@ def substitute_patterns_in_file(subs, file_like):
         Resulting string with substitutions.
     """
     if isinstance(file_like, types.StringTypes):
-        with open(file_like, 'r') as fp:
-            contents = fp.read()
+        with open(file_like, 'r') as file_like:
+            contents = file_like.read()
     else:
         contents = file_like.read()
     return substitute_patterns(subs, contents)
@@ -299,8 +305,8 @@ def replace_c_class_names(paths, src, dest, inplace=True):
     inplace : boolean, optional
         Make substitutions in-place.
     """
-    src_with_underscores = re.sub('\.', '_', src)
-    dest_with_underscores = re.sub('\.', '_', dest)
+    src_with_underscores = re.sub(r'\.', '_', src)
+    dest_with_underscores = re.sub(r'\.', '_', dest)
     subs = (
         (src_with_underscores, dest_with_underscores),
         (src, dest),
@@ -311,8 +317,8 @@ def replace_c_class_names(paths, src, dest, inplace=True):
         if not inplace:
             path = re.sub(src_with_underscores, dest_with_underscores,
                           os.path.basename(path))
-        with open(path, 'w') as fp:
-            fp.write(contents)
+        with open(path, 'w') as file_like:
+            file_like.write(contents)
 
 
 def replace_py_class_names(paths, src, dest, inplace=True):
@@ -329,8 +335,8 @@ def replace_py_class_names(paths, src, dest, inplace=True):
     inplace : boolean, optional
         Make substitutions in-place.
     """
-    src_with_underscores = re.sub('\.', '_', src)
-    dest_with_underscores = re.sub('\.', '_', dest)
+    src_with_underscores = re.sub(r'\.', '_', src)
+    dest_with_underscores = re.sub(r'\.', '_', dest)
     subs = (
         (src_with_underscores, dest_with_underscores),
         (src, dest),
@@ -343,8 +349,8 @@ def replace_py_class_names(paths, src, dest, inplace=True):
             new_class = dest_with_underscores.split('_')[-1]
             path = re.sub(old_class, new_class,
                           os.path.basename(path))
-        with open(path, 'w') as fp:
-            fp.write(contents)
+        with open(path, 'w') as file_like:
+            file_like.write(contents)
 
 
 def replace_cxx_class_names(paths, src, dest, inplace=True):
@@ -361,10 +367,10 @@ def replace_cxx_class_names(paths, src, dest, inplace=True):
     inplace : boolean, optional
         Make substitutions in-place.
     """
-    src_with_underscores = re.sub('\.', '_', src)
-    dest_with_underscores = re.sub('\.', '_', dest)
-    src_with_colons = re.sub('\.', '::', src)
-    dest_with_colons = re.sub('\.', '::', dest)
+    src_with_underscores = re.sub(r'\.', '_', src)
+    dest_with_underscores = re.sub(r'\.', '_', dest)
+    src_with_colons = re.sub(r'\.', '::', src)
+    dest_with_colons = re.sub(r'\.', '::', dest)
     subs = (
         (src_with_underscores, dest_with_underscores),
         (src_with_colons, dest_with_colons),
@@ -376,8 +382,8 @@ def replace_cxx_class_names(paths, src, dest, inplace=True):
         if not inplace:
             path = re.sub(src_with_underscores, dest_with_underscores,
                           os.path.basename(path))
-        with open(path, 'w') as fp:
-            fp.write(contents)
+        with open(path, 'w') as file_like:
+            file_like.write(contents)
 
 
 def replace_bmi_names(paths, mapping):
@@ -392,10 +398,10 @@ def replace_bmi_names(paths, mapping):
     """
     for path in paths:
         if os.path.isfile(path):
-            with open(path, 'r') as fp:
-                contents = Template(fp.read()).safe_substitute(mapping)
-            with open(path, 'w') as fp:
-                fp.write(contents)
+            with open(path, 'r') as file_like:
+                contents = Template(file_like.read()).safe_substitute(mapping)
+            with open(path, 'w') as file_like:
+                file_like.write(contents)
 
 
 def copy_class(src, dest, bocca=None):
@@ -547,31 +553,14 @@ def guess_language_from_files(path):
     str
         Language of the class.
     """
-    from glob import glob
-
     with cd(path) as _:
-        if len(glob('*.[ch]')) > 0:
+        if len(glob.glob('*.[ch]')) > 0:
             return 'c'
-        elif len(glob('*.cxx') + glob('*.hxx')) > 0:
+        elif len(glob.glob('*.cxx') + glob.glob('*.hxx')) > 0:
             return 'cxx'
         else:
             return None
 
-
-_GRID_TYPE_FUNCTIONS = {
-    'uniform_rectilinear': [
-        'get_grid_shape', 'get_grid_spacing', 'get_grid_origin',
-    ],
-    'rectilinear': [
-        'get_grid_shape', 'get_grid_x', 'get_grid_y',
-    ],
-    'structured': [
-        'get_grid_shape', 'get_grid_x', 'get_grid_y',
-    ],
-    'unstructured': [
-        'get_grid_offset', 'get_grid_connectivity',
-    ],
-}
 
 def get_interfaces(proj):
     """Get interfaces in a project description.
@@ -677,7 +666,7 @@ def make_project(proj, clobber=False):
     bocca.create_project(proj['name'], language=proj['language'],
                          ifexists=ifexists)
 
-    with cd(proj['name']) as path:
+    with cd(proj['name']) as _:
         for name, interface in interfaces.items():
             bocca.create_interface(name, **interface)
 

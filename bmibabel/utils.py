@@ -29,6 +29,7 @@ class cd(object):
             Path to the working directory.
         """
         self._dir = dir
+        self._starting_dir = None
 
     def __enter__(self):
         self._starting_dir = os.path.abspath(os.getcwd())
@@ -37,7 +38,7 @@ class cd(object):
         os.chdir(self._dir)
         return os.path.abspath(os.getcwd())
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, ex_type, ex_value, traceback):
         os.chdir(self._starting_dir)
 
 
@@ -56,6 +57,7 @@ class cdtemp(object):
         mktemp
         """
         self._kwds = kwds
+        self._starting_dir = None
         self._tmp_dir = None
 
     def __enter__(self):
@@ -64,7 +66,7 @@ class cdtemp(object):
         os.chdir(self._tmp_dir)
         return os.path.abspath(self._tmp_dir)
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, ex_type, ex_value, traceback):
         os.chdir(self._starting_dir)
         shutil.rmtree(self._tmp_dir)
 
@@ -92,7 +94,7 @@ class mktemp(object):
         self._tmp_dir = tempfile.mkdtemp(**self._kwds)
         return os.path.abspath(self._tmp_dir)
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, ex_type, ex_value, traceback):
         shutil.rmtree(self._tmp_dir)
 
 
@@ -213,6 +215,6 @@ def read_first_of(files):
         Contents of the first file found, or an empty string.
     """
     for name in files:
-        with open(name, 'r') as fp:
-            return fp.read()
+        with open(name, 'r') as file_like:
+            return file_like.read()
     return ''
