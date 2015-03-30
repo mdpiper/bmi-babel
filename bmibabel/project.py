@@ -7,8 +7,7 @@ _THIS_DIR = os.path.dirname(__file__)
 
 
 def empty_bmi_project():
-    """Description of an empty bocca project.
-    """
+    """Description of an empty bocca project."""
     return {
         'name': 'csdms',
         'language': 'c',
