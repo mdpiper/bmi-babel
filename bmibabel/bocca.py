@@ -211,8 +211,6 @@ def class_language(name, bocca=None):
     """
     bocca = bocca or which('bocca')
 
-    import re
-
     lines = check_output([bocca, 'display', 'class', name]).split(os.linesep)
     m = re.search('\((?P<lang>\w+)\)', lines[0])
     return m.group('lang')
