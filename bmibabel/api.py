@@ -47,6 +47,26 @@ def validate_api(api):
     return True
 
 
+def prepend_env_path(path_var, path, env=None):
+    """Prepend a path to and environment variable.
+
+    Parameters
+    ----------
+    path_var : str
+        Environment variable.
+    path : str
+        Path to prepend.
+    env : dict, optional
+        Environment to use, otherwise the current environment.
+    """
+    env = env or os.environ
+
+    try:
+        env[path_var] = os.path.sep.join(path, env[path_var])
+    except KeyError:
+        env[path_var] = env[path_var]
+
+
 def pkg_config(package, opt):
     """Use pkg-config to get compile options.
 
@@ -62,9 +82,16 @@ def pkg_config(package, opt):
     str
         Compiler flags.
     """
+    import copy
+
     assert(opt in ['--cflags', '--libs'])
 
-    return check_output(['pkg-config', opt, package]).strip()
+    env = copy.copy(os.environ)
+    if 'CSDMS_PREFIX' in env:
+        pkg_config_path = os.path.join(env['CSDMS_PREFIX'], 'lib', 'pkgconfig')
+        prepend_env_path('PKG_CONFIG_PATH', pkg_config_path, env=env)
+
+    return check_output(['pkg-config', opt, package], env=env).strip()
 
 
 def load(dir='.'):
