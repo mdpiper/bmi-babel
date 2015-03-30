@@ -4,15 +4,11 @@ from __future__ import print_function
 
 import os
 import sys
-import subprocess
 import re
-import types
-import warnings
 
 import yaml
-from distutils.dir_util import mkpath
 
-from ..utils import cd, check_output, system, read_first_of
+from ..utils import cd, check_output, read_first_of
 from ..git import git_repo_name, git_clone_or_update, git_repo_sha
 from ..project import empty_bmi_project, add_bmi_component
 from .. import api

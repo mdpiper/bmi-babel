@@ -10,9 +10,6 @@ import shutil
 import glob
 from string import Template
 
-import yaml
-from distutils.dir_util import mkpath
-
 from .utils import cd, mktemp, which, system, check_output
 from .errors import ProjectExistsError
 

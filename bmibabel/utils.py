@@ -10,7 +10,6 @@ import types
 import tempfile
 import shutil
 
-import yaml
 from distutils.dir_util import mkpath
 
 

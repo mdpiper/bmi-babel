@@ -2,12 +2,11 @@
 """Work with api.yaml files from a BMI description."""
 
 import os
-import types
 
 import yaml
 
-from .utils import cd, check_output, system
-from .git import git_repo_name, git_clone_or_update, git_repo_sha
+from .utils import cd, check_output
+from .git import git_repo_name, git_clone_or_update
 from .errors import (MissingFileError, ParseError, MissingKeyError,
                      UnknownKeyError)
 from . import build
