@@ -709,17 +709,7 @@ impl_c_Component_get_var_itemsize(
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.get_var_itemsize) */
     BMI_Model * model = GET_BMI_MODEL(self);
-    {
-      int grid;
-      int n_values;
-      int nbytes;
-
-      model->get_var_nbytes(model->self, name, &nbytes);
-      model->get_var_grid(model->self, name, &grid);
-      model->get_grid_size(model->self, grid, &n_values);
-
-      *size = nbytes / n_values;
-    }
+    model->get_var_itemsize(model->self, name, size);
     return 0;
   EXIT:
     return -1;
