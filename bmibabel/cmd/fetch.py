@@ -110,19 +110,44 @@ def _get_bmi_from_repo(repo, prefix='/usr/local'):
     return bmi
 
 
+def scan_repos_from_file(fname):
+    """Read repositories from a file.
+
+    Parameters
+    ----------
+    fname : str
+        Name of file containing repositories.
+
+    Returns
+    -------
+    list
+        List of repositories.
+    """
+    with open(fname, 'r') as file_like:
+        repos = yaml.load(file_like)
+
+    return repos
+
+
 def main():
     """Get a remote BMI implementation and build it."""
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('repo', type=str, nargs='+',
+    parser.add_argument('repo', type=str, nargs='*',
                         help='GitHub repository for BMI implementation')
     parser.add_argument('--prefix', type=str, default='/usr/local/csdms',
                         help='Prefix for installation')
+    parser.add_argument('--file', type=str, default=None,
+                        help='Repos file.')
 
     args = parser.parse_args()
 
+    repos = args.repo
+    if args.file:
+        repos += scan_repos_from_file(args.file)
+
     proj = empty_bmi_project()
-    for repo in args.repo:
+    for repo in repos:
         try:
             add_bmi_component(proj, _get_bmi_from_repo(repo,
                                                        prefix=args.prefix))
