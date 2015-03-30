@@ -32,6 +32,13 @@ class cd(object):
         self._starting_dir = None
 
     def __enter__(self):
+        """Change to new working directory.
+
+        Returns
+        -------
+        str
+            Absolute path of new working directory.
+        """
         self._starting_dir = os.path.abspath(os.getcwd())
         if not os.path.isdir(self._dir):
             mkpath(self._dir)
@@ -39,6 +46,7 @@ class cd(object):
         return os.path.abspath(os.getcwd())
 
     def __exit__(self, ex_type, ex_value, traceback):
+        """Change to original working directory."""
         os.chdir(self._starting_dir)
 
 
@@ -61,12 +69,20 @@ class cdtemp(object):
         self._tmp_dir = None
 
     def __enter__(self):
+        """Change to new temporary directory.
+
+        Returns
+        -------
+        str
+            Absolute path of temporary directory.
+        """
         self._starting_dir = os.path.abspath(os.getcwd())
         self._tmp_dir = tempfile.mkdtemp(**self._kwds)
         os.chdir(self._tmp_dir)
         return os.path.abspath(self._tmp_dir)
 
     def __exit__(self, ex_type, ex_value, traceback):
+        """Change to original working directory and clean up."""
         os.chdir(self._starting_dir)
         shutil.rmtree(self._tmp_dir)
 
@@ -91,10 +107,18 @@ class mktemp(object):
         self._tmp_dir = None
 
     def __enter__(self):
+        """Make temporary directory.
+
+        Returns
+        -------
+        str
+            Absolute path of temporary directory.
+        """
         self._tmp_dir = tempfile.mkdtemp(**self._kwds)
         return os.path.abspath(self._tmp_dir)
 
     def __exit__(self, ex_type, ex_value, traceback):
+        """Remove temporary directory."""
         shutil.rmtree(self._tmp_dir)
 
 
