@@ -12,6 +12,8 @@ import shutil
 
 from distutils.dir_util import mkpath
 
+from .errors import MissingFileError
+
 
 class cd(object):
 
@@ -245,5 +247,4 @@ def read_first_of(files):
                 return file_like.read()
         except IOError:
             pass
-
-    return None
+    raise MissingFileError(', '.join(files))
