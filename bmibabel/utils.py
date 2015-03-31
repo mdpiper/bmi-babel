@@ -236,9 +236,14 @@ def read_first_of(files):
     Returns
     -------
     str
-        Contents of the first file found, or an empty string.
+        Contents of the first file found, or ``None`` if none of the files
+        could be read.
     """
     for name in files:
-        with open(name, 'r') as file_like:
-            return file_like.read()
-    return ''
+        try:
+            with open(name, 'r') as file_like:
+                return file_like.read()
+        except IOError:
+            pass
+
+    return None
