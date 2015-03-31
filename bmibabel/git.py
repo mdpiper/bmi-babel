@@ -2,8 +2,29 @@
 """Git-related utility functions."""
 
 import os
+import re
 
 from .utils import which, check_output, system, cd, status
+
+
+_SHA1_REGEX = r'^[0-9a-f]{40}$'
+_SHA1_PATTERN = re.compile(_SHA1_REGEX)
+
+
+def is_sha1(string):
+    """Test if a string is a SHA1.
+
+    Parameters
+    ----------
+    string : str
+        String to test.
+
+    Returns
+    -------
+    boolean
+        ``True`` if the string is a valid SHA1. Otherwise, ``False``.
+    """
+    return _SHA1_PATTERN.match(string) is not None
 
 
 def git_repo_name(url):
