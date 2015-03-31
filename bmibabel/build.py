@@ -8,7 +8,11 @@ import types
 
 import yaml
 
-from .utils import cd
+from .utils import cd, read_first_of
+
+
+_BUILD_FILES = ['.bmi.yaml', '.bmi.yml', os.path.join('.bmi', 'api.yaml'),
+                os.path.join('.bmi', 'api.yml')]
 
 
 def load_script(dir='.'):
@@ -29,8 +33,7 @@ def load_script(dir='.'):
     RuntimeError is the build is not a supported build type.
     """
     with cd(dir):
-        with open(os.path.join('.bmi', 'api.yaml'), 'r') as file_like:
-            api = yaml.load(file_like)
+        api = yaml.load(read_first_of(_BUILD_FILES))
 
     if isinstance(api['build'], dict) and 'brew' in api['build']:
         return brew_install_instructions(api['build']['brew'])
