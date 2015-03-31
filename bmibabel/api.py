@@ -6,10 +6,13 @@ import os
 import yaml
 
 from .utils import cd, check_output
-from .errors import (MissingFileError, ParseError, MissingKeyError,
-                     UnknownKeyError)
+from .errors import ParseError, MissingKeyError, UnknownKeyError
 from . import build
+from .utils import read_first_of
 
+
+_API_FILES = [os.path.join('.bmi', 'api.yaml'),
+              os.path.join('.bmi', 'api.yml')]
 
 _REQUIRED_KEYS = set(['language', 'build', ])
 _OPTIONAL_KEYS = set(['name', 'type', 'register', 'class', 'package',
@@ -27,9 +30,12 @@ def validate_api(api):
 
     Raises
     ------
-    ParseError on an invalid description.
-    MissingKeyError if a required key is missing
-    UnknownKeyError if an unknown key is found
+    ParseError
+        If the description object is invalid.
+    MissingKeyError
+        If a required key is missing
+    UnknownKeyError
+        If an unknown key is found
     """
     if not isinstance(api, dict):
         raise ParseError('object is not a dictionary')
@@ -107,14 +113,15 @@ def load(dir='.'):
 
     Raises
     ------
-    RuntimeError is the description is invalid.
+    ParseError
+    MissingKeyError
+    UnknownKeyError
+        If the description is invalid.
+    MissingFileError
+        If an api file cannot be read.
     """
     with cd(dir):
-        try:
-            with open(os.path.join('.bmi', 'api.yaml'), 'r') as fp:
-                api = yaml.load(fp)
-        except IOError:
-            raise MissingFileError('api.yaml')
+        api = yaml.load(read_first_of(_API_FILES))
 
     validate_api(api)
 
