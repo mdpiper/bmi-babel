@@ -122,7 +122,7 @@ def execute_build(instructions, prefix='/usr/local'):
     for instruction in instructions:
         print('==> %s' % instruction, file=sys.stderr)
         child.sendline(instruction + ' || echo FAIL')
-        i = child.expect([pexpect.TIMEOUT, prompt, 'FAIL'], timeout=10)
+        i = child.expect([pexpect.TIMEOUT, prompt, 'FAIL'], timeout=300)
         print(render_output_block(child.before), file=sys.stderr)
         if i == 0 or i == 2:
             break
