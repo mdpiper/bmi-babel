@@ -24,9 +24,12 @@ def add_bmi_component(project, api):
 
     Parameters
     ----------
-    project : dict
-        Project description.
+    project : dict or list
+        Project description or list of descriptions.
     api : dict
         API description.
     """
-    project['bmi'].append(api)
+    try:
+        project['bmi'].extend(api)
+    except TypeError:
+        project['bmi'].append(api)
