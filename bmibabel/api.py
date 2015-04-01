@@ -66,7 +66,8 @@ def prepend_env_path(path_var, path, env=None):
     env = env or os.environ
 
     try:
-        env[path_var] = os.path.sep.join([path, env[path_var]])
+        if path not in env[path_var]:
+            env[path_var] = os.pathsep.join([path, env[path_var]])
     except KeyError:
         env[path_var] = path
 
@@ -121,7 +122,8 @@ def load(dir='.'):
         If an api file cannot be read.
     """
     with cd(dir):
-        api = yaml.load(read_first_of(_API_FILES))
+        api = yaml.load(read_first_of([os.path.join('.bmi', 'api.yaml'),
+                                       os.path.join('.bmi', 'api.yml')]))
 
     validate_api(api)
 
@@ -139,6 +141,30 @@ def load(dir='.'):
         pass
 
     return api
+
+
+def load_all(dir='.'):
+    """Load multiple API descriptions.
+
+    Parameters
+    ----------
+    dir : str, optional
+        Path to folder that contains description file.
+
+    Returns
+    -------
+    list
+        Descriptions of APIs.
+    """
+    with cd(dir):
+        try:
+            bmi = yaml.load(read_first_of(['.bmi.yaml', '.bmi.yml']))
+        except MissingFileError:
+            apis = [load()]
+        else:
+            apis = [load(dir=path) for path in bmi['bmi_paths']]
+
+    return apis
 
 
 def execute_api_build(dir='.', prefix='/usr/local'):
