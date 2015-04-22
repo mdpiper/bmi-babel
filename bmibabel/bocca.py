@@ -124,6 +124,7 @@ class Bocca(object):
                 shutil.copy(os.path.join(impl, fname),
                             os.path.join('components', name))
 
+
     def create_bmi_class(self, name, language='c', bmi_mapping=None,
                          impl=None):
         """Create a class that implements the Basic Model Interface.
@@ -140,6 +141,9 @@ class Bocca(object):
             Path to folder containing implementation files to import.
         """
         bmi_mapping = bmi_mapping or {}
+
+        if not name.startswith('csdms.'):
+            name = 'csdms.' + name
 
         kwds = dict(implements='csdms.core.Bmi', language=language)
         if impl is None:
@@ -167,7 +171,7 @@ def make_impl_dir(name, language, subs=None, destdir='.'):
     Returns
     -------
     str
-        Path to new impl folder.
+        Absolute path to new impl folder.
     """
     subs = subs or {}
 
@@ -177,7 +181,7 @@ def make_impl_dir(name, language, subs=None, destdir='.'):
                               language=language)
     replace_bmi_names(glob.glob(os.path.join(impl_dir, '*')), subs)
 
-    return impl_dir
+    return os.path.abspath(impl_dir)
 
 
 def is_bocca_project(name):
