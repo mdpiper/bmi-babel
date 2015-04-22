@@ -103,9 +103,9 @@ def _get_bmi_from_repo(repo, prefix='/usr/local'):
 
     with cd(cache_dir) as _:
         api.execute_api_build(prefix=prefix)
-        bmi = api.load()
+        bmi = api.load_all()
 
-    bmi['name'] = _component_name_from_repo(repo, bmi.get('name', None))
+    #bmi['name'] = _component_name_from_repo(repo, bmi.get('name', None))
 
     return bmi
 
