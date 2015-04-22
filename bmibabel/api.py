@@ -6,7 +6,8 @@ import os
 import yaml
 
 from .utils import cd, check_output
-from .errors import ParseError, MissingKeyError, UnknownKeyError
+from .errors import (ParseError, MissingKeyError, UnknownKeyError,
+                     MissingFileError)
 from . import build
 from .utils import read_first_of
 
@@ -14,9 +15,9 @@ from .utils import read_first_of
 _API_FILES = [os.path.join('.bmi', 'api.yaml'),
               os.path.join('.bmi', 'api.yml')]
 
-_REQUIRED_KEYS = set(['language', 'build', ])
+_REQUIRED_KEYS = set(['language', ])
 _OPTIONAL_KEYS = set(['name', 'type', 'register', 'class', 'package',
-                      'libs', 'cflags', 'includes'])
+                      'libs', 'cflags', 'includes', 'build'])
 _VALID_KEYS = _REQUIRED_KEYS | _OPTIONAL_KEYS
 
 
@@ -99,6 +100,14 @@ def pkg_config(package, opt):
     return check_output(['pkg-config', opt, package], env=env).strip()
 
 
+def find_api_description_file(dir='.'):
+    with cd(dir):
+        desc = yaml.load(read_first_of(['.bmi.yaml', '.bmi.yml']))
+        if 'implementation' in desc:
+            if isinstance(desc['implementation'], dict):
+                return desc['implementation']
+
+
 def load(dir='.'):
     """Load an api description from a file.
 
@@ -123,11 +132,12 @@ def load(dir='.'):
     """
     with cd(dir):
         api = yaml.load(read_first_of([os.path.join('.bmi', 'api.yaml'),
-                                       os.path.join('.bmi', 'api.yml')]))
+                                       os.path.join('.bmi', 'api.yml'),
+                                       'api.yaml', 'api.yml']))
 
     validate_api(api)
 
-    api.pop('build')
+    api.pop('build', None)
 
     if api['language'] == 'c':
         cflags = api['cflags']
