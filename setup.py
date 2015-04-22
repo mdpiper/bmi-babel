@@ -37,7 +37,7 @@ setup(
 
     license='MIT',
 
-    packages=['bmibabel'],
+    packages=['bmibabel', 'bmibabel.cmd'],
 
     entry_points={
         'console_scripts': [
