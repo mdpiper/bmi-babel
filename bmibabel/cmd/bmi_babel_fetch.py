@@ -55,7 +55,7 @@ def main():
     if args.file:
         repos += scan_repos_from_file(args.file)
 
-    description = fetch_bmi_components(repos)
+    description = fetch_bmi_components(repos, install_prefix=args.prefix)
 
     print(description, file=sys.stdout)
 

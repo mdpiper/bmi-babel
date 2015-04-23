@@ -110,12 +110,12 @@ def _get_bmi_from_repo(repo, prefix='/usr/local'):
     return bmi
 
 
-def fetch_bmi_components(repos):
+def fetch_bmi_components(repos, install_prefix='/usr/local'):
     proj = empty_bmi_project()
     for repo in repos:
         try:
-            add_bmi_component(proj, _get_bmi_from_repo(repo,
-                                                       prefix=args.prefix))
+            add_bmi_component(proj,
+                              _get_bmi_from_repo(repo, prefix=install_prefix))
         except MissingFileError as err:
             warnings.warn('Skipping %s: missing file (%s)' % (repo, err))
         except ParseError as err:
