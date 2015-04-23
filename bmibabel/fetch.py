@@ -31,8 +31,8 @@ def _cache_dir_from_repo(repo, branch='master'):
     str
         Name of the directory to use for the cache.
     """
-    cache_dir = '${repo}-${sha}'.format(repo=git_repo_name(repo),
-                                        sha=git_repo_sha(repo, branch=branch))
+    cache_dir = '{repo}-{sha}'.format(repo=git_repo_name(repo),
+                                      sha=git_repo_sha(repo, branch=branch))
     return os.path.join('cache', cache_dir)
 
 
