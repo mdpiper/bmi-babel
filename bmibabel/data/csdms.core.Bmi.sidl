@@ -20,7 +20,8 @@ package csdms version 0.0 {
             
 // Insert-UserCode-Here {csdms.core.Bmi.methods} (Insert your interface methods here)
             bool initialize(in string config_file);	            	
-            bool update(in double time_interval);	            	
+            bool update();	            	
+            bool update_until(in double time_interval);	            	
             bool finalize();	            	
             
             int get_start_time(out double time);
