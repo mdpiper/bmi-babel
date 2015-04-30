@@ -24,6 +24,7 @@ import sidl.NotImplementedException
 
 # DO-NOT-DELETE splicer.begin(_before_type)
 import sys
+import traceback
 from ${bmi_package} import ${bmi_class} as Model
 # DO-NOT-DELETE splicer.end(_before_type)
 
@@ -89,7 +90,28 @@ class Component:
     return 0
 # DO-NOT-DELETE splicer.end(initialize)
 
-  def update(self, time_interval):
+  def update(self):
+    #
+    # sidl EXPECTED INCOMING TYPES
+    # ============================
+    #
+
+    #
+    # sidl EXPECTED RETURN VALUE(s)
+    # =============================
+    # bool _return
+    #
+
+# DO-NOT-DELETE splicer.begin(update)
+    try:
+        self._model.update()
+    except Exception as error:
+        traceback.print_exc(file=sys.stdout)
+        return 1
+    return 0
+# DO-NOT-DELETE splicer.end(update)
+
+  def update_until(self, time_interval):
     #
     # sidl EXPECTED INCOMING TYPES
     # ============================
@@ -102,10 +124,14 @@ class Component:
     # bool _return
     #
 
-# DO-NOT-DELETE splicer.begin(update)
-    self._model.update_until(time_interval)
+# DO-NOT-DELETE splicer.begin(update_until)
+    try:
+        self._model.update_until(time_interval)
+    except Exception as error:
+        traceback.print_exc(file=sys.stdout)
+        return 1
     return 0
-# DO-NOT-DELETE splicer.end(update)
+# DO-NOT-DELETE splicer.end(update_until)
 
   def finalize(self):
     #
