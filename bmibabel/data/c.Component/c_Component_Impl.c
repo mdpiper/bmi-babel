@@ -288,7 +288,7 @@ impl_c_Component_update(
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.update) */
     BMI_Model * model = GET_BMI_MODEL(self);
-    model->update_until(model->self, time_interval);
+    model->update(model->self);
     return 0;
 
   EXIT:;
@@ -297,6 +297,37 @@ impl_c_Component_update(
     /* DO-NOT-DELETE splicer.end(c.Component.update) */
   }
 }
+
+/*
+ * Method:  update_until[]
+ */
+
+#undef __FUNC__
+#define __FUNC__ "impl_c_Component_update_until"
+
+#ifdef __cplusplus
+extern "C"
+#endif
+sidl_bool
+impl_c_Component_update_until(
+  /* in */ c_Component self,
+  /* in */ double time_interval,
+  /* out */ sidl_BaseInterface *_ex)
+{
+  *_ex = 0;
+  {
+    /* DO-NOT-DELETE splicer.begin(c.Component.update_until) */
+    BMI_Model * model = GET_BMI_MODEL(self);
+    model->update_until(model->self, time_interval);
+    return 0;
+
+  EXIT:;
+
+    return 1;
+    /* DO-NOT-DELETE splicer.end(c.Component.update_until) */
+  }
+}
+
 
 /*
  * Method:  finalize[]
