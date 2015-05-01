@@ -288,12 +288,7 @@ impl_c_Component_update(
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.update) */
     BMI_Model * model = GET_BMI_MODEL(self);
-    model->update(model->self);
-    return 0;
-
-  EXIT:;
-
-    return 1;
+    return model->update(model->self);
     /* DO-NOT-DELETE splicer.end(c.Component.update) */
   }
 }
@@ -318,12 +313,7 @@ impl_c_Component_update_until(
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.update_until) */
     BMI_Model * model = GET_BMI_MODEL(self);
-    model->update_until(model->self, time_interval);
-    return 0;
-
-  EXIT:;
-
-    return 1;
+    return model->update_until(model->self, time_interval);
     /* DO-NOT-DELETE splicer.end(c.Component.update_until) */
   }
 }
@@ -348,10 +338,7 @@ impl_c_Component_finalize(
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.finalize) */
     BMI_Model * model = GET_BMI_MODEL(self);
-    model->finalize(model->self);
-    return 0;
-  EXIT:;
-    return 1;
+    return model->finalize(model->self);
     /* DO-NOT-DELETE splicer.end(c.Component.finalize) */
   }
 }
@@ -376,10 +363,7 @@ impl_c_Component_get_start_time(
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.get_start_time) */
     BMI_Model * model = GET_BMI_MODEL(self);
-    model->get_start_time(model->self, time);
-    return 0;
-  EXIT:;
-    return -1.;
+    return model->get_start_time(model->self, time);
     /* DO-NOT-DELETE splicer.end(c.Component.get_start_time) */
   }
 }
@@ -404,10 +388,7 @@ impl_c_Component_get_current_time(
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.get_current_time) */
     BMI_Model * model = GET_BMI_MODEL(self);
-    model->get_current_time(model->self, time);
-    return 0;
-  EXIT:;
-    return -1.;
+    return model->get_current_time(model->self, time);
     /* DO-NOT-DELETE splicer.end(c.Component.get_current_time) */
   }
 }
@@ -432,11 +413,63 @@ impl_c_Component_get_end_time(
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.get_end_time) */
     BMI_Model * model = GET_BMI_MODEL(self);
-    model->get_end_time(model->self, time);
-    return 0;
-  EXIT:;
-    return -1;
+    return model->get_end_time(model->self, time);
     /* DO-NOT-DELETE splicer.end(c.Component.get_end_time) */
+  }
+}
+
+/*
+ * Method:  get_time_step[]
+ */
+
+#undef __FUNC__
+#define __FUNC__ "impl_c_Component_get_time_step"
+
+#ifdef __cplusplus
+extern "C"
+#endif
+int32_t
+impl_c_Component_get_time_step(
+  /* in */ c_Component self,
+  /* out */ double* time,
+  /* out */ sidl_BaseInterface *_ex)
+{
+  *_ex = 0;
+  {
+    /* DO-NOT-DELETE splicer.begin(c.Component.get_time_step) */
+    BMI_Model * model = GET_BMI_MODEL(self);
+    return model->get_time_step(model->self, time);
+    /* DO-NOT-DELETE splicer.end(c.Component.get_time_step) */
+  }
+}
+
+/*
+ * Method:  get_time_units[]
+ */
+
+#undef __FUNC__
+#define __FUNC__ "impl_c_Component_get_time_units"
+
+#ifdef __cplusplus
+extern "C"
+#endif
+int32_t
+impl_c_Component_get_time_units(
+  /* in */ c_Component self,
+  /* out */ char** units,
+  /* out */ sidl_BaseInterface *_ex)
+{
+  *_ex = 0;
+  {
+    /* DO-NOT-DELETE splicer.begin(c.Component.get_time_units) */
+    int status;
+    BMI_Model * model = GET_BMI_MODEL(self);
+    *units = (char*) malloc(sizeof(char) * 2048);
+    status = model->get_time_units(model->self, *units);
+    if (status != 0)
+        free(*units);
+    return status;
+    /* DO-NOT-DELETE splicer.end(c.Component.get_time_units) */
   }
 }
 
@@ -459,15 +492,14 @@ impl_c_Component_get_component_name(
   *_ex = 0;
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.get_component_name) */
+    int status;
     BMI_Model * model = GET_BMI_MODEL(self);
     *name = (char*)malloc(sizeof(char) * 2048);
 
-    model->get_component_name(model->self, *name);
-    return 0;
-
-  EXIT:
-    free(*name);
-    return 1;
+    status = model->get_component_name(model->self, *name);
+    if (status != 0)
+        free(*name);
+    return status;
     /* DO-NOT-DELETE splicer.end(c.Component.get_component_name) */
   }
 }
@@ -492,10 +524,7 @@ impl_c_Component_get_input_item_count(
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.get_input_item_count) */
     BMI_Model * model = GET_BMI_MODEL(self);
-    model->get_input_var_name_count(model->self, count);
-    return 0;
-  EXIT:
-    return -1;
+    return model->get_input_var_name_count(model->self, count);
     /* DO-NOT-DELETE splicer.end(c.Component.get_input_item_count) */
   }
 }
@@ -520,10 +549,7 @@ impl_c_Component_get_output_item_count(
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.get_output_item_count) */
     BMI_Model * model = GET_BMI_MODEL(self);
-    model->get_output_var_name_count(model->self, count);
-    return 0;
-  EXIT:
-    return -1;
+    return model->get_output_var_name_count(model->self, count);
     /* DO-NOT-DELETE splicer.end(c.Component.get_output_item_count) */
   }
 }
@@ -547,10 +573,14 @@ impl_c_Component_get_input_var_names(
   *_ex = 0;
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.get_input_var_names) */
+    int status;
     BMI_Model * model = GET_BMI_MODEL(self);
     int number_of_names = 0;
 
-    model->get_input_var_name_count(model->self, &number_of_names);
+    status = model->get_input_var_name_count(model->self, &number_of_names);
+    if (status != 0)
+        return status;
+
     *names = sidl_string__array_create1d(number_of_names);
 
     {
@@ -563,7 +593,11 @@ impl_c_Component_get_input_var_names(
         item_names[i] = item_names[i - 1] + 2048;
       }
 
-      model->get_input_var_names(model->self, item_names);
+      status = model->get_input_var_names(model->self, item_names);
+      if (status != 0) {
+          free(item_names);
+          return status;
+      }
 
       for (i = 0; i < number_of_names; i ++) {
         sidl_string__array_set1(*names, i, item_names[i]);
@@ -571,9 +605,7 @@ impl_c_Component_get_input_var_names(
       free(item_names);
     }
 
-    return 0;
-  EXIT:
-    return -1;
+    return status;
     /* DO-NOT-DELETE splicer.end(c.Component.get_input_var_names) */
   }
 }
@@ -597,10 +629,14 @@ impl_c_Component_get_output_var_names(
   *_ex = 0;
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.get_output_var_names) */
+    int status;
     BMI_Model * model = GET_BMI_MODEL(self);
     int number_of_names = 0;
 
-    model->get_output_var_name_count(model->self, &number_of_names);
+    status = model->get_output_var_name_count(model->self, &number_of_names);
+    if (status != 0)
+        return status;
+
     *names = sidl_string__array_create1d(number_of_names);
 
     {
@@ -613,7 +649,11 @@ impl_c_Component_get_output_var_names(
         item_names[i] = item_names[i - 1] + 2048;
       }
 
-      model->get_output_var_names(model->self, item_names);
+      status = model->get_output_var_names(model->self, item_names);
+      if (status != 0) {
+        free(item_names);
+        return status;
+      }
 
       for (i = 0; i < number_of_names; i ++) {
         sidl_string__array_set1(*names, i, item_names[i]);
@@ -621,9 +661,7 @@ impl_c_Component_get_output_var_names(
       free(item_names);
     }
 
-    return 0;
-  EXIT:
-    return -1;
+    return status;
     /* DO-NOT-DELETE splicer.end(c.Component.get_output_var_names) */
   }
 }
@@ -648,13 +686,14 @@ impl_c_Component_get_var_type(
   *_ex = 0;
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.get_var_type) */
+    int status;
+
     BMI_Model * model = GET_BMI_MODEL(self);
     *type = (char*) malloc(sizeof(char) * 2048);
-    model->get_var_type(model->self, name, *type);
-    return 0;
-  EXIT:
-    free(*type);
-    return -1;
+    status = model->get_var_type(model->self, name, *type);
+    if (status != 0)
+        free(*type);
+    return status;
     /* DO-NOT-DELETE splicer.end(c.Component.get_var_type) */
   }
 }
@@ -679,13 +718,14 @@ impl_c_Component_get_var_units(
   *_ex = 0;
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.get_var_units) */
+    int status;
+
     BMI_Model * model = GET_BMI_MODEL(self);
     *units = (char*) malloc(sizeof(char) * 2048);
     model->get_var_units(model->self, name, *units);
-    return 0;
-  EXIT:
-    free(*units);
-    return -1;
+    if (status != 0)
+        free(*type);
+    return status;
     /* DO-NOT-DELETE splicer.end(c.Component.get_var_units) */
   }
 }
@@ -711,10 +751,7 @@ impl_c_Component_get_var_nbytes(
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.get_var_nbytes) */
     BMI_Model * model = GET_BMI_MODEL(self);
-    model->get_var_nbytes(model->self, name, nbytes);
-    return 0;
-  EXIT:
-    return -1;
+    return model->get_var_nbytes(model->self, name, nbytes);
     /* DO-NOT-DELETE splicer.end(c.Component.get_var_nbytes) */
   }
 }
@@ -740,10 +777,7 @@ impl_c_Component_get_var_itemsize(
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.get_var_itemsize) */
     BMI_Model * model = GET_BMI_MODEL(self);
-    model->get_var_itemsize(model->self, name, size);
-    return 0;
-  EXIT:
-    return -1;
+    return model->get_var_itemsize(model->self, name, size);
     /* DO-NOT-DELETE splicer.end(c.Component.get_var_itemsize) */
   }
 }
@@ -769,10 +803,7 @@ impl_c_Component_get_var_grid(
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.get_var_grid) */
     BMI_Model * model = GET_BMI_MODEL(self);
-    model->get_var_grid(model->self, name, grid);
-    return 0;
-  EXIT:
-    return -1;
+    return model->get_var_grid(model->self, name, grid);
     /* DO-NOT-DELETE splicer.end(c.Component.get_var_grid) */
   }
 }
@@ -797,13 +828,14 @@ impl_c_Component_get_grid_type(
   *_ex = 0;
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.get_grid_type) */
+    int status;
+
     BMI_Model * model = GET_BMI_MODEL(self);
     *type = (char*)malloc(sizeof(char) * 2048);
-    model->get_grid_type(model->self, grid, *type);
-    return 0;
-  EXIT:
-    free(*type);
-    return -1;
+    status = model->get_grid_type(model->self, grid, *type);
+    if (status != 0)
+        return -1;
+    return status;
     /* DO-NOT-DELETE splicer.end(c.Component.get_grid_type) */
   }
 }
@@ -829,10 +861,7 @@ impl_c_Component_get_grid_rank(
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.get_grid_rank) */
     BMI_Model * model = GET_BMI_MODEL(self);
-    model->get_grid_rank(model->self, grid, rank);
-    return 0;
-  EXIT:
-    return -1;
+    return model->get_grid_rank(model->self, grid, rank);
     /* DO-NOT-DELETE splicer.end(c.Component.get_grid_rank) */
   }
 }
@@ -858,10 +887,7 @@ impl_c_Component_get_grid_size(
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.get_grid_size) */
     BMI_Model * model = GET_BMI_MODEL(self);
-    model->get_grid_size(model->self, grid, size);
-    return 0;
-  EXIT:
-    return -1;
+    return model->get_grid_size(model->self, grid, size);
     /* DO-NOT-DELETE splicer.end(c.Component.get_grid_size) */
   }
 }
@@ -889,10 +915,7 @@ impl_c_Component_get_grid_shape(
     BMI_Model * model = GET_BMI_MODEL(self);
     int * buffer = sidl_int__array_first(shape);
 
-    model->get_grid_shape(model->self, grid, buffer);
-    return 0;
-  EXIT:
-    return -1;
+    return model->get_grid_shape(model->self, grid, buffer);
     /* DO-NOT-DELETE splicer.end(c.Component.get_grid_shape) */
   }
 }
@@ -920,10 +943,7 @@ impl_c_Component_get_grid_spacing(
     BMI_Model * model = GET_BMI_MODEL(self);
     double * buffer = sidl_double__array_first(spacing);
 
-    model->get_grid_spacing(model->self, grid, buffer);
-    return 0;
-  EXIT:
-    return -1;
+    return model->get_grid_spacing(model->self, grid, buffer);
     /* DO-NOT-DELETE splicer.end(c.Component.get_grid_spacing) */
   }
 }
@@ -951,10 +971,7 @@ impl_c_Component_get_grid_origin(
     BMI_Model * model = GET_BMI_MODEL(self);
     double * buffer = sidl_double__array_first(origin);
 
-    model->get_grid_origin(model->self, grid, buffer);
-    return 0;
-  EXIT:
-    return -1;
+    return model->get_grid_origin(model->self, grid, buffer);
     /* DO-NOT-DELETE splicer.end(c.Component.get_grid_origin) */
   }
 }
@@ -982,10 +999,7 @@ impl_c_Component_get_grid_x(
     BMI_Model * model = GET_BMI_MODEL(self);
     double * buffer = sidl_double__array_first(x);
 
-    model->get_grid_x(model->self, grid, buffer);
-    return 0;
-  EXIT:
-    return -1;
+    return model->get_grid_x(model->self, grid, buffer);
     /* DO-NOT-DELETE splicer.end(c.Component.get_grid_x) */
   }
 }
@@ -1013,10 +1027,7 @@ impl_c_Component_get_grid_y(
     BMI_Model * model = GET_BMI_MODEL(self);
     double * buffer = sidl_double__array_first(y);
 
-    model->get_grid_y(model->self, grid, buffer);
-    return 0;
-  EXIT:
-    return -1;
+    return model->get_grid_y(model->self, grid, buffer);
     /* DO-NOT-DELETE splicer.end(c.Component.get_grid_y) */
   }
 }
@@ -1044,10 +1055,7 @@ impl_c_Component_get_grid_z(
     BMI_Model * model = GET_BMI_MODEL(self);
     double * buffer = sidl_double__array_first(z);
 
-    model->get_grid_z(model->self, grid, buffer);
-    return 0;
-  EXIT:
-    return -1;
+    return model->get_grid_z(model->self, grid, buffer);
     /* DO-NOT-DELETE splicer.end(c.Component.get_grid_z) */
   }
 }
@@ -1075,10 +1083,7 @@ impl_c_Component_get_grid_connectivity(
     BMI_Model * model = GET_BMI_MODEL(self);
     int * buffer = sidl_int__array_first(connectivity);
 
-    model->get_grid_connectivity(model->self, grid, buffer);
-    return 0;
-  EXIT:
-    return -1;
+    return model->get_grid_connectivity(model->self, grid, buffer);
     /* DO-NOT-DELETE splicer.end(c.Component.get_grid_connectivity) */
   }
 }
@@ -1106,10 +1111,7 @@ impl_c_Component_get_grid_offset(
     BMI_Model * model = GET_BMI_MODEL(self);
     int * buffer = sidl_int__array_first(offset);
 
-    model->get_grid_offset(model->self, grid, buffer);
-    return 0;
-  EXIT:
-    return -1;
+    return model->get_grid_offset(model->self, grid, buffer);
     /* DO-NOT-DELETE splicer.end(c.Component.get_grid_offset) */
   }
 }
@@ -1134,22 +1136,22 @@ impl_c_Component_get_value(
   *_ex = 0;
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.get_value) */
+    int status;
     BMI_Model * model = GET_BMI_MODEL(self);
     char type[2048];
     void * buffer = NULL;
 
-    model->get_var_type(model->self, name, type);
-    
+    status = model->get_var_type(model->self, name, type);
+    if (status != 0)
+      return status;
+
     if (strcmp(type, "double") == 0) {
       buffer = sidl_double__array_first((struct sidl_double__array*)dest);
     } else if (strcmp(type, "int") == 0) {
       buffer = sidl_int__array_first((struct sidl_int__array*)dest);
     }
 
-    model->get_value(model->self, name, buffer);
-    return 0;
-  EXIT:
-    return -1;
+    return model->get_value(model->self, name, buffer);
     /* DO-NOT-DELETE splicer.end(c.Component.get_value) */
   }
 }
@@ -1180,10 +1182,18 @@ impl_c_Component_get_value_ptr(
     int size;
     int grid;
 
-    model->get_value_ptr(model->self, name, &buffer);
-    model->get_var_type(model->self, name, type);
-    model->get_var_grid(model->self, name, &grid);
-    model->get_grid_size(model->self, grid, &size);
+    status = model->get_value_ptr(model->self, name, &buffer);
+    if (status != 0)
+      return status;
+    status = model->get_var_type(model->self, name, type);
+    if (status != 0)
+      return status;
+    status = model->get_var_grid(model->self, name, &grid);
+    if (status != 0)
+      return status;
+    status = model->get_grid_size(model->self, grid, &size);
+    if (status != 0)
+      return status;
     
     {
       const int n_dims = 1;
@@ -1200,9 +1210,7 @@ impl_c_Component_get_value_ptr(
       }
     }
 
-    return 0;
-  EXIT:
-    return -1;
+    return status;
     /* DO-NOT-DELETE splicer.end(c.Component.get_value_ptr) */
   }
 }
@@ -1228,11 +1236,14 @@ impl_c_Component_get_value_at_indices(
   *_ex = 0;
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.get_value_at_indices) */
+    int status;
     BMI_Model * model = GET_BMI_MODEL(self);
     char type[2048];
     void * buffer = NULL;
 
-    model->get_var_type(model->self, name, type);
+    status = model->get_var_type(model->self, name, type);
+    if (status != 0)
+      return status;
     
     if (strcmp(type, "double") == 0) {
       buffer = sidl_double__array_first((struct sidl_double__array*)dest);
@@ -1244,11 +1255,10 @@ impl_c_Component_get_value_at_indices(
       int *inds_start = sidl_int__array_first(inds);
       int len = sidl_int__array_length(inds, 0);
 
-      model->get_value_at_indices(model->self, name, buffer, inds_start, len);
+      status = model->get_value_at_indices(model->self, name, buffer, inds_start, len);
     }
-    return 0;
-  EXIT:
-    return -1;
+
+    return status;
     /* DO-NOT-DELETE splicer.end(c.Component.get_value_at_indices) */
   }
 }
@@ -1273,11 +1283,14 @@ impl_c_Component_set_value(
   *_ex = 0;
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.set_value) */
+    int status;
     BMI_Model * model = GET_BMI_MODEL(self);
     char type[2048];
     void * buffer = NULL;
 
-    model->get_var_type(model->self, name, type);
+    status = model->get_var_type(model->self, name, type);
+    if (status != 0)
+      return status;
     
     if (strcmp(type, "double") == 0) {
       buffer = sidl_double__array_first((struct sidl_double__array*)values);
@@ -1285,10 +1298,7 @@ impl_c_Component_set_value(
       buffer = sidl_int__array_first((struct sidl_int__array*)values);
     }
 
-    model->set_value(model->self, name, buffer);
-    return 0;
-  EXIT:
-    return -1;
+    return model->set_value(model->self, name, buffer);
     /* DO-NOT-DELETE splicer.end(c.Component.set_value) */
   }
 }
@@ -1314,11 +1324,14 @@ impl_c_Component_set_value_at_indices(
   *_ex = 0;
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.set_value_at_indices) */
+    int status;
     BMI_Model * model = GET_BMI_MODEL(self);
     char type[2048];
     void * buffer = NULL;
 
-    model->get_var_type(model->self, name, type);
+    status = model->get_var_type(model->self, name, type);
+    if (status != 0)
+      return status;
     
     if (strcmp(type, "double") == 0) {
       buffer = sidl_double__array_first((struct sidl_double__array*)src);
@@ -1330,11 +1343,9 @@ impl_c_Component_set_value_at_indices(
       int *inds_start = sidl_int__array_first(inds);
       int len = sidl_int__array_length(inds, 0);
 
-      model->set_value_at_indices(model->self, name, inds_start, len, buffer);
+      status = model->set_value_at_indices(model->self, name, inds_start, len, buffer);
     }
-    return 0;
-  EXIT:
-    return -1;
+    return status;
     /* DO-NOT-DELETE splicer.end(c.Component.set_value_at_indices) */
   }
 }
