@@ -724,7 +724,7 @@ impl_c_Component_get_var_units(
     *units = (char*) malloc(sizeof(char) * 2048);
     model->get_var_units(model->self, name, *units);
     if (status != 0)
-        free(*type);
+        free(*units);
     return status;
     /* DO-NOT-DELETE splicer.end(c.Component.get_var_units) */
   }
@@ -1176,6 +1176,7 @@ impl_c_Component_get_value_ptr(
   *_ex = 0;
   {
     /* DO-NOT-DELETE splicer.begin(c.Component.get_value_ptr) */
+    int status;
     BMI_Model * model = GET_BMI_MODEL(self);
     char type[2048];
     void * buffer = NULL;
