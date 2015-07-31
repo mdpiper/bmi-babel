@@ -24,6 +24,7 @@ import sidl.NotImplementedException
 
 # DO-NOT-DELETE splicer.begin(_before_type)
 import sys
+import numpy as np
 from ${bmi_package} import ${bmi_class} as Model
 # DO-NOT-DELETE splicer.end(_before_type)
 
