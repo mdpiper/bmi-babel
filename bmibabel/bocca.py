@@ -174,6 +174,7 @@ def make_impl_dir(name, language, subs=None, destdir='.'):
         Absolute path to new impl folder.
     """
     subs = subs or {}
+    subs.setdefault('name', name.split('.')[-1])
 
     src_impls = _PATH_TO_IMPL[language]
 
