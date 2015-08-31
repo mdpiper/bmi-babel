@@ -667,4 +667,39 @@ class Component:
 
 # DO-NOT-DELETE splicer.begin(_final)
 # Insert-Code-Here {_final} ()
+import sys
+import traceback
+import inspect
+
+
+def print_traceback():
+    msg = """
+An error occured inside a babel wrapper. Here is the traceback.
+    """.strip()
+    for file_ in (sys.stderr, sys.stdout):
+        print >> file_, msg
+        traceback.print_exc(file=file_)
+
+
+class _print_exception(object):
+    def __enter__(self):
+        pass
+
+    def __exit__(self, exception_type, value, traceback_obj):
+        if value:
+            print_traceback()
+
+
+def print_exception(func):
+    def _wrap(*args):
+        try:
+            return func(*args)
+        except Exception:
+            print_traceback()
+            raise
+    return _wrap
+
+
+for name, func in inspect.getmembers(${name}, inspect.isroutine):
+    setattr(${name}, name, print_exception(func))
 # DO-NOT-DELETE splicer.end(_final)
