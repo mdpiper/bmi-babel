@@ -431,7 +431,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_shape)
-    shape = self._model.get_grid_shape(grid)
+    shape[:] = self._model.get_grid_shape(grid)
     return 0
 # DO-NOT-DELETE splicer.end(get_grid_shape)
 
@@ -450,7 +450,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_spacing)
-    spacing = self._model.get_grid_spacing(grid)
+    spacing[:] = self._model.get_grid_spacing(grid)
     return 0
 # DO-NOT-DELETE splicer.end(get_grid_spacing)
 
@@ -469,7 +469,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_origin)
-    origin = self._model.get_grid_origin(grid)
+    origin[:] = self._model.get_grid_origin(grid)
     return 0
 # DO-NOT-DELETE splicer.end(get_grid_origin)
 
@@ -488,7 +488,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_x)
-    x = self._model.get_grid_x(grid)
+    x[:] = self._model.get_grid_x(grid)
     return 0
 # DO-NOT-DELETE splicer.end(get_grid_x)
 
@@ -507,7 +507,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_y)
-    y = self._model.get_grid_y(grid)
+    y[:] = self._model.get_grid_y(grid)
     return 0
 # DO-NOT-DELETE splicer.end(get_grid_y)
 
@@ -526,7 +526,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_z)
-    z = self._model.get_grid_z(grid)
+    z[:] = self._model.get_grid_z(grid)
     return 0
 # DO-NOT-DELETE splicer.end(get_grid_z)
 
@@ -545,7 +545,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_connectivity)
-    connectivity = self._model.get_grid_connectivity(grid)
+    connectivity[:] = self._model.get_grid_connectivity(grid)
     return 0
 # DO-NOT-DELETE splicer.end(get_grid_connectivity)
 
@@ -564,7 +564,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_offset)
-    offset = self._model.get_grid_offset(grid)
+    offset[:] = self._model.get_grid_offset(grid)
     return 0
 # DO-NOT-DELETE splicer.end(get_grid_offset)
 
@@ -583,7 +583,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_value)
-    dest = self._model.get_value(name)
+    dest[:] = self._model.get_value(name)
     return 0
 # DO-NOT-DELETE splicer.end(get_value)
 
@@ -622,7 +622,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_value_at_indices)
-    dest = self._model.get_value_at_indices(name, inds)
+    dest[:] = self._model.get_value_at_indices(name, inds)
     return 0
 # DO-NOT-DELETE splicer.end(get_value_at_indices)
 
