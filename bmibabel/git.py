@@ -98,6 +98,7 @@ def git_clone(url, git=None, dir='.', branch='master'):
                 '-n', '--depth=1'])
         system([git, 'reset', '--hard',
                 'origin/{branch}'.format(branch=branch)])
+        system([git, 'checkout', '-q', branch])
 
 
 def git_pull(dir='.', branch='master', git=None):
