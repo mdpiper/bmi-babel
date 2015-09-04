@@ -375,7 +375,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_type)
-    return (0, self._model.get_grid_type(name))
+    return (0, self._model.get_grid_type(grid))
 # DO-NOT-DELETE splicer.end(get_grid_type)
 
   def get_grid_rank(self, grid):
@@ -394,7 +394,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_rank)
-    return (0, self._model.get_grid_rank(name))
+    return (0, self._model.get_grid_rank(grid))
 # DO-NOT-DELETE splicer.end(get_grid_rank)
 
   def get_grid_size(self, grid):
@@ -413,7 +413,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_size)
-    return (0, self._model.get_grid_size(name))
+    return (0, self._model.get_grid_size(grid))
 # DO-NOT-DELETE splicer.end(get_grid_size)
 
   def get_grid_shape(self, grid, shape):
@@ -431,7 +431,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_shape)
-    self._model.get_grid_shape(name, shape)
+    shape[:] = self._model.get_grid_shape(grid)
     return 0
 # DO-NOT-DELETE splicer.end(get_grid_shape)
 
@@ -450,7 +450,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_spacing)
-    self._model.get_grid_spacing(name, spacing)
+    spacing[:] = self._model.get_grid_spacing(grid)
     return 0
 # DO-NOT-DELETE splicer.end(get_grid_spacing)
 
@@ -469,7 +469,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_origin)
-    self._model.get_grid_origin(name, origin)
+    origin[:] = self._model.get_grid_origin(grid)
     return 0
 # DO-NOT-DELETE splicer.end(get_grid_origin)
 
@@ -488,7 +488,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_x)
-    self._model.get_grid_x(name, x)
+    x[:] = self._model.get_grid_x(grid)
     return 0
 # DO-NOT-DELETE splicer.end(get_grid_x)
 
@@ -507,7 +507,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_y)
-    self._model.get_grid_y(name, y)
+    y[:] = self._model.get_grid_y(grid)
     return 0
 # DO-NOT-DELETE splicer.end(get_grid_y)
 
@@ -526,7 +526,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_z)
-    self._model.get_grid_z(name, z)
+    z[:] = self._model.get_grid_z(grid)
     return 0
 # DO-NOT-DELETE splicer.end(get_grid_z)
 
@@ -545,7 +545,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_connectivity)
-    self._model.get_grid_connectivity(name, connectivity)
+    connectivity[:] = self._model.get_grid_connectivity(grid)
     return 0
 # DO-NOT-DELETE splicer.end(get_grid_connectivity)
 
@@ -564,7 +564,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_offset)
-    self._model.get_grid_offset(name, offset)
+    offset[:] = self._model.get_grid_offset(grid)
     return 0
 # DO-NOT-DELETE splicer.end(get_grid_offset)
 
@@ -583,7 +583,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_value)
-    self._model.get_value(name, dest)
+    dest[:] = self._model.get_value(name)
     return 0
 # DO-NOT-DELETE splicer.end(get_value)
 
@@ -622,7 +622,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_value_at_indices)
-    self._model.get_value_at_indices(name, dest, inds)
+    dest[:] = self._model.get_value_at_indices(name, inds)
     return 0
 # DO-NOT-DELETE splicer.end(get_value_at_indices)
 
