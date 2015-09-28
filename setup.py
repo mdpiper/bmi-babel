@@ -46,5 +46,5 @@ setup(
         ],
     },
 
-    package_data={'': ['data/*sidl', 'data/c.Component/*', 'data/py.Component/*']},
+    package_data={'bmibabel': ['data/*sidl', 'data/c.Component/*', 'data/py.Component/*']},
 )
