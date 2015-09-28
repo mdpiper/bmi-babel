@@ -45,4 +45,6 @@ setup(
             'bmi-babel-fetch=bmibabel.cmd.bmi_babel_fetch:main',
         ],
     },
+
+    package_data={'': ['data/*sidl', 'data/c.Component/*', 'data/py.Component/*']},
 )
