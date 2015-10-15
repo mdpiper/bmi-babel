@@ -42,7 +42,9 @@ setup(
     entry_points={
         'console_scripts': [
             'bmi-babel-make=bmibabel.cmd.make:main',
-            'bmi-babel-fetch=bmibabel.cmd.fetch:main',
+            'bmi-babel-fetch=bmibabel.cmd.bmi_babel_fetch:main',
         ],
     },
+
+    package_data={'bmibabel': ['data/*sidl', 'data/c.Component/*', 'data/py.Component/*']},
 )

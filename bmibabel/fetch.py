@@ -5,15 +5,15 @@ from __future__ import print_function
 import os
 import sys
 import re
-import argparse
+import warnings
 
 import yaml
 
-from ..utils import cd
-from ..git import git_repo_name, git_clone_or_update, git_repo_sha
-from ..project import empty_bmi_project, add_bmi_component
-from .. import api
-from ..errors import MissingFileError, ParseError
+from .utils import cd
+from .git import git_repo_name, git_clone_or_update, git_repo_sha
+from .project import empty_bmi_project, add_bmi_component
+from . import api
+from .errors import MissingFileError, ParseError
 
 
 def _cache_dir_from_repo(repo, branch='master'):
@@ -31,8 +31,8 @@ def _cache_dir_from_repo(repo, branch='master'):
     str
         Name of the directory to use for the cache.
     """
-    cache_dir = '${repo}-${sha}'.format(repo=git_repo_name(repo),
-                                        sha=git_repo_sha(repo, branch=branch))
+    cache_dir = '{repo}-{sha}'.format(repo=git_repo_name(repo),
+                                      sha=git_repo_sha(repo, branch=branch))
     return os.path.join('cache', cache_dir)
 
 
@@ -111,60 +111,16 @@ def _get_bmi_from_repo(repo, prefix='/usr/local', build_api=False):
     return bmi
 
 
-def scan_repos_from_file(fname):
-    """Read repositories from a file.
-
-    Parameters
-    ----------
-    fname : str
-        Name of file containing repositories.
-
-    Returns
-    -------
-    list
-        List of repositories.
-    """
-    with open(fname, 'r') as file_like:
-        repos = yaml.load(file_like)
-
-    return repos
-
-
-def main():
-    """Get a remote BMI implementation and build it."""
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument('repo', type=str, nargs='*',
-                        help='GitHub repository for BMI implementation')
-    parser.add_argument('--prefix', type=str, default='/usr/local/csdms',
-                        help='Prefix for installation')
-    parser.add_argument('--file', type=str, default=None,
-                        help='Repos file.')
-    parser.add_argument('--no-build', dest='build_api', action='store_false',
-                        default=True,
-                        help='Get API info but do not build the API.')
-
-    args = parser.parse_args()
-
-    repos = args.repo
-    if args.file:
-        repos += scan_repos_from_file(args.file)
-
+def fetch_bmi_components(repos, install_prefix='/usr/local', build_api=False):
     proj = empty_bmi_project()
     for repo in repos:
         try:
             add_bmi_component(proj,
-                              _get_bmi_from_repo(repo, prefix=args.prefix,
-                                                 build_api=args.build_api))
+                              _get_bmi_from_repo(repo, prefix=install_prefix,
+                                                 build_api=build_api))
         except MissingFileError as err:
-            print('Skipping %s: missing file (%s)' % (repo, err),
-                  file=sys.stderr)
+            warnings.warn('Skipping %s: missing file (%s)' % (repo, err))
         except ParseError as err:
-            print('Skipping %s: parse error (%s)' % (repo, err),
-                  file=sys.stderr)
+            warnings.warn('Skipping %s: parse error (%s)' % (repo, err))
 
-    print('%s' % yaml.dump(proj, default_flow_style=False), file=sys.stdout)
-
-
-if __name__ == '__main__':
-    main()
+    return yaml.dump(proj, default_flow_style=False)
