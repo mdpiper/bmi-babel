@@ -77,7 +77,7 @@ def _parse_repo_line(line):
     return repo.strip(), branch.strip()
 
 
-def _get_bmi_from_repo(repo, prefix='/usr/local'):
+def _get_bmi_from_repo(repo, prefix='/usr/local', build_api=False):
     """Get BMI description from a git repository.
 
     Parameters
@@ -102,7 +102,8 @@ def _get_bmi_from_repo(repo, prefix='/usr/local'):
         cache_dir = repo
 
     with cd(cache_dir) as _:
-        api.execute_api_build(prefix=prefix)
+        if build_api:
+            api.execute_api_build(prefix=prefix)
         bmi = api.load_all()
 
     #bmi['name'] = _component_name_from_repo(repo, bmi.get('name', None))
@@ -139,6 +140,9 @@ def main():
                         help='Prefix for installation')
     parser.add_argument('--file', type=str, default=None,
                         help='Repos file.')
+    parser.add_argument('--no-build', dest='build_api', action='store_false',
+                        default=True,
+                        help='Get API info but do not build the API.')
 
     args = parser.parse_args()
 
@@ -149,8 +153,9 @@ def main():
     proj = empty_bmi_project()
     for repo in repos:
         try:
-            add_bmi_component(proj, _get_bmi_from_repo(repo,
-                                                       prefix=args.prefix))
+            add_bmi_component(proj,
+                              _get_bmi_from_repo(repo, prefix=args.prefix,
+                                                 build_api=args.build_api))
         except MissingFileError as err:
             print('Skipping %s: missing file (%s)' % (repo, err),
                   file=sys.stderr)
