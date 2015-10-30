@@ -25,6 +25,7 @@ import sidl.NotImplementedException
 # DO-NOT-DELETE splicer.begin(_before_type)
 import sys
 import traceback
+import numpy as np
 from ${bmi_package} import ${bmi_class} as Model
 # DO-NOT-DELETE splicer.end(_before_type)
 
@@ -86,7 +87,8 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(initialize)
-    return bmi_status(self._model.initialize, (config_file, ))
+    self._model.initialize(config_file)
+    return 0
 # DO-NOT-DELETE splicer.end(initialize)
 
   def update(self):
@@ -102,7 +104,8 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(update)
-    return bmi_status(self._model.update, ())
+    self._model.update()
+    return 0
 # DO-NOT-DELETE splicer.end(update)
 
   def update_until(self, time_interval):
@@ -119,7 +122,8 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(update_until)
-    return bmi_status(self._model.update_until, (time_interval, ))
+    self._model.update_until(time_interval)
+    return 0
 # DO-NOT-DELETE splicer.end(update_until)
 
   def finalize(self):
@@ -130,7 +134,8 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(finalize)
-    return bmi_status(self._model.finalize, ())
+    self._model.finalize()
+    return 0
 # DO-NOT-DELETE splicer.end(finalize)
 
   def get_start_time(self):
@@ -148,7 +153,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_start_time)
-    return bmi_status_with_value(self._model.get_start_time, ())
+    return (0, self._model.get_start_time())
 # DO-NOT-DELETE splicer.end(get_start_time)
 
   def get_current_time(self):
@@ -166,7 +171,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_current_time)
-    return bmi_status_with_value(self._model.get_current_time, ())
+    return (0, self._model.get_current_time())
 # DO-NOT-DELETE splicer.end(get_current_time)
 
   def get_end_time(self):
@@ -184,7 +189,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_end_time)
-    return bmi_status_with_value(self._model.get_end_time, ())
+    return (0, self._model.get_end_time())
 # DO-NOT-DELETE splicer.end(get_end_time)
 
   def get_time_step(self):
@@ -202,7 +207,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_time_step)
-    return bmi_status_with_value(self._model.get_time_step, ())
+    return (0, self._model.get_time_step())
 # DO-NOT-DELETE splicer.end(get_time_step)
 
   def get_time_units(self):
@@ -220,7 +225,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_time_units)
-    return bmi_status_with_value(self._model.get_time_units, ())
+    return (0, self._model.get_time_units())
 # DO-NOT-DELETE splicer.end(get_time_units)
 
   def get_component_name(self):
@@ -238,7 +243,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_component_name)
-    return bmi_status_with_value(self._model.get_component_name, ())
+    return (0, self._model.get_component_name())
 # DO-NOT-DELETE splicer.end(get_component_name)
 
   def get_input_item_count(self):
@@ -256,7 +261,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_input_item_count)
-    return bmi_status_with_value(self._model.get_input_item_count, ())
+    return (0, self._model.get_input_item_count())
 # DO-NOT-DELETE splicer.end(get_input_item_count)
 
   def get_output_item_count(self):
@@ -274,7 +279,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_output_item_count)
-    return bmi_status_with_value(self._model.get_output_item_count, ())
+    return (0, self._model.get_output_item_count())
 # DO-NOT-DELETE splicer.end(get_output_item_count)
 
   def get_input_var_names(self):
@@ -292,11 +297,8 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_input_var_names)
-    status = bmi_status_with_value(self._model.get_input_var_names, ())
-    if status[0] == 0:
-        return np.array(status[1], dtype=str)
-    else:
-        return status
+    names = self._model.get_input_var_names()
+    return (0, np.array(names, dtype=str)
 # DO-NOT-DELETE splicer.end(get_input_var_names)
 
   def get_output_var_names(self):
@@ -314,11 +316,8 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_output_var_names)
-    status = bmi_status_with_value(self._model.get_output_var_names, ())
-    if status[0] == 0:
-        return np.array(status[1], dtype=str)
-    else:
-        return status
+    names = self._model.get_output_var_names()
+    return (0, np.array(names, dtype=str)
 # DO-NOT-DELETE splicer.end(get_output_var_names)
 
   def get_var_type(self, name):
@@ -337,7 +336,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_var_type)
-    return bmi_status_with_value(self._model.get_var_type, (name, ))
+    return (0, self._model.get_var_type(name))
 # DO-NOT-DELETE splicer.end(get_var_type)
 
   def get_var_units(self, name):
@@ -356,7 +355,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_var_units)
-    return bmi_status_with_value(self._model.get_var_units, (name, ))
+    return (0, self._model.get_var_units(name))
 # DO-NOT-DELETE splicer.end(get_var_units)
 
   def get_var_nbytes(self, name):
@@ -375,7 +374,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_var_nbytes)
-    return bmi_status_with_value(self._model.get_var_nbytes, (name, ))
+    return (0, self._model.get_var_nbytes(name))
 # DO-NOT-DELETE splicer.end(get_var_nbytes)
 
   def get_var_itemsize(self, name):
@@ -394,7 +393,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_var_itemsize)
-    return bmi_status_with_value(self._model.get_var_itemsize, (name, ))
+    return (0, self._model.get_var_itemsize(name))
 # DO-NOT-DELETE splicer.end(get_var_itemsize)
 
   def get_var_grid(self, name):
@@ -413,7 +412,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_var_grid)
-    return bmi_status_with_value(self._model.get_var_grid, (name, ))
+    return (0, self._model.get_var_grid(name))
 # DO-NOT-DELETE splicer.end(get_var_grid)
 
   def get_grid_type(self, grid):
@@ -432,7 +431,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_type)
-    return bmi_status_with_value(self._model.get_grid_type, (grid, ))
+    return (0, self._model.get_grid_type(grid))
 # DO-NOT-DELETE splicer.end(get_grid_type)
 
   def get_grid_rank(self, grid):
@@ -451,7 +450,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_rank)
-    return bmi_status_with_value(self._model.get_grid_rank, (grid, ))
+    return (0, self._model.get_grid_rank(grid))
 # DO-NOT-DELETE splicer.end(get_grid_rank)
 
   def get_grid_size(self, grid):
@@ -470,7 +469,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_size)
-    return bmi_status_with_value(self._model.get_grid_size, (grid, ))
+    return (0, self._model.get_grid_size(grid))
 # DO-NOT-DELETE splicer.end(get_grid_size)
 
   def get_grid_shape(self, grid, shape):
@@ -488,7 +487,8 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_shape)
-    return bmi_status(self._model.get_grid_shape, (grid, shape))
+    shape[:] = self._model.get_grid_shape(grid)
+    return 0
 # DO-NOT-DELETE splicer.end(get_grid_shape)
 
   def get_grid_spacing(self, grid, spacing):
@@ -506,7 +506,8 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_spacing)
-    return bmi_status(self._model.get_grid_spacing, (grid, spacing))
+    spacing[:] = self._model.get_grid_spacing(grid)
+    return 0
 # DO-NOT-DELETE splicer.end(get_grid_spacing)
 
   def get_grid_origin(self, grid, origin):
@@ -524,7 +525,8 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_origin)
-    return bmi_status(self._model.get_grid_origin, (grid, origin))
+    origin[:] = self._model.get_grid_origin(grid)
+    return 0
 # DO-NOT-DELETE splicer.end(get_grid_origin)
 
   def get_grid_x(self, grid, x):
@@ -542,7 +544,8 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_x)
-    return bmi_status(self._model.get_grid_x, (grid, x))
+    x[:] = self._model.get_grid_x(grid)
+    return 0
 # DO-NOT-DELETE splicer.end(get_grid_x)
 
   def get_grid_y(self, grid, y):
@@ -560,7 +563,8 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_y)
-    return bmi_status(self._model.get_grid_y, (grid, y))
+    y[:] = self._model.get_grid_y(grid)
+    return 0
 # DO-NOT-DELETE splicer.end(get_grid_y)
 
   def get_grid_z(self, grid, z):
@@ -578,7 +582,8 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_z)
-    return bmi_status(self._model.get_grid_z, (grid, z))
+    z[:] = self._model.get_grid_z(grid)
+    return 0
 # DO-NOT-DELETE splicer.end(get_grid_z)
 
   def get_grid_connectivity(self, grid, connectivity):
@@ -596,7 +601,8 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_connectivity)
-    return bmi_status(self._model.get_grid_connectivity, (grid, connectivity))
+    connectivity[:] = self._model.get_grid_connectivity(grid)
+    return 0
 # DO-NOT-DELETE splicer.end(get_grid_connectivity)
 
   def get_grid_offset(self, grid, offset):
@@ -614,7 +620,8 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_grid_offset)
-    return bmi_status(self._model.get_grid_offset, (grid, offset))
+    offset[:] = self._model.get_grid_offset(grid)
+    return 0
 # DO-NOT-DELETE splicer.end(get_grid_offset)
 
   def get_value(self, name, dest):
@@ -632,7 +639,8 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_value)
-    return bmi_status(self._model.get_value, (name, dest))
+    dest[:] = self._model.get_value(name)
+    return 0
 # DO-NOT-DELETE splicer.end(get_value)
 
   def get_value_ptr(self, name):
@@ -651,7 +659,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_value_ptr)
-    return bmi_status_with_val(self._model.get_value_ptr, (name, ))
+    return (0, self._model.get_value_ptr(name))
 # DO-NOT-DELETE splicer.end(get_value_ptr)
 
   def get_value_at_indices(self, name, dest, inds):
@@ -670,7 +678,8 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_value_at_indices)
-    return bmi_status(self._model.get_value_at_indices, (name, dest, inds))
+    dest[:] = self._model.get_value_at_indices(name, inds)
+    return 0
 # DO-NOT-DELETE splicer.end(get_value_at_indices)
 
   def set_value(self, name, values):
@@ -688,7 +697,8 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(set_value)
-    return bmi_status(self._model.set_value, (name, values))
+    self._model.set_value(name, values)
+    return 0
 # DO-NOT-DELETE splicer.end(set_value)
 
   def set_value_at_indices(self, name, inds, src):
@@ -707,27 +717,45 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(set_value_at_indices)
-    return bmi_status(self._model.set_value_at_indices, (name, inds, src))
+    self._model.set_value_at_indices(name, inds, src)
+    return 0
 # DO-NOT-DELETE splicer.end(set_value_at_indices)
 
 # DO-NOT-DELETE splicer.begin(_final)
 # Insert-Code-Here {_final} ()
-def bmi_status_with_value(func, args, val_on_error=None):
-    try:
-        val = func(*args)
-    except Exception as error:
-        traceback.print_exc(file=sys.stdout)
-        return (1, val_on_error)
-    else:
-        return (0, val)
+import sys
+import traceback
+import inspect
 
 
-def bmi_status(func, args):
-    try:
-        func(*args)
-    except Exception as error:
-        traceback.print_exc(file=sys.stdout)
-        return 1
-    else:
-        return 0
+def print_traceback():
+    msg = """
+An error occured inside a babel wrapper. Here is the traceback.
+    """.strip()
+    for file_ in (sys.stderr, sys.stdout):
+        print >> file_, msg
+        traceback.print_exc(file=file_)
+
+
+class _print_exception(object):
+    def __enter__(self):
+        pass
+
+    def __exit__(self, exception_type, value, traceback_obj):
+        if value:
+            print_traceback()
+
+
+def print_exception(func):
+    def _wrap(*args):
+        try:
+            return func(*args)
+        except Exception:
+            print_traceback()
+            raise
+    return _wrap
+
+
+for name, func in inspect.getmembers(${name}, inspect.isroutine):
+    setattr(${name}, name, print_exception(func))
 # DO-NOT-DELETE splicer.end(_final)
