@@ -237,14 +237,13 @@ def read_first_of(files):
 
     Returns
     -------
-    str
-        Contents of the first file found, or ``None`` if none of the files
-        could be read.
+    (str, str)
+        Name of the first file found and then contents of that file.
     """
     for name in files:
         try:
             with open(name, 'r') as file_like:
-                return file_like.read()
+                return (os.path.abspath(name), file_like.read())
         except IOError:
             pass
     raise MissingFileError(', '.join(files))

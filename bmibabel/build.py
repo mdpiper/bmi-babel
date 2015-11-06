@@ -33,7 +33,8 @@ def load_script(dir='.'):
     RuntimeError is the build is not a supported build type.
     """
     with cd(dir):
-        api = yaml.load(read_first_of(_BUILD_FILES))
+        (_, contents) = read_first_of(_BUILD_FILES)
+    api = yaml.load(contents)
 
     if isinstance(api['build'], dict) and 'brew' in api['build']:
         return brew_install_instructions(api['build']['brew'])
