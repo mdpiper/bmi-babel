@@ -1,0 +1,2 @@
+recursive-include bmibabel/data/*/*.*
+recursive-include bmibabel/data/*.sidl

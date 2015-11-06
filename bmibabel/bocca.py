@@ -351,6 +351,9 @@ def replace_py_class_names(paths, src, dest, inplace=True):
             new_class = dest_with_underscores.split('_')[-1]
             path = re.sub(old_class, new_class,
                           os.path.basename(path))
+            (base, ext) = os.path.splitext(path)
+            if ext == '.tmpl':
+                path = base
         with open(path, 'w') as file_like:
             file_like.write(contents)
 
@@ -473,7 +476,7 @@ def dup_py_impl(path, new, destdir='.'):
     """
     old = os.path.basename(path)
 
-    impl_files = (glob.glob(os.path.join(path, '*.py')) +
+    impl_files = (glob.glob(os.path.join(path, '*.py.tmpl')) +
                   glob.glob(os.path.join(path, 'make.*.user')))
 
     with cd(os.path.join(destdir, new)) as _:

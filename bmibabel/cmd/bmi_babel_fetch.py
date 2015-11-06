@@ -46,8 +46,11 @@ def main():
                         help='GitHub repository for BMI implementation')
     parser.add_argument('--prefix', type=str, default='/usr/local/csdms',
                         help='Prefix for installation')
+    parser.add_argument('--no-build', dest='build_api', action='store_false',
+                        default=True,
+                        help='Get API info but do not build')
     parser.add_argument('--file', type=str, default=None,
-                        help='Repos file.')
+                        help='Repos file')
 
     args = parser.parse_args()
 
@@ -55,7 +58,8 @@ def main():
     if args.file:
         repos += scan_repos_from_file(args.file)
 
-    description = fetch_bmi_components(repos, install_prefix=args.prefix)
+    description = fetch_bmi_components(repos, install_prefix=args.prefix,
+                                       build_api=args.build_api)
 
     print(description, file=sys.stdout)
 
