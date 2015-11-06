@@ -298,7 +298,7 @@ class Component:
 
 # DO-NOT-DELETE splicer.begin(get_input_var_names)
     names = self._model.get_input_var_names()
-    return (0, np.array(names, dtype=str)
+    return (0, np.array(names, dtype=str))
 # DO-NOT-DELETE splicer.end(get_input_var_names)
 
   def get_output_var_names(self):
@@ -317,7 +317,7 @@ class Component:
 
 # DO-NOT-DELETE splicer.begin(get_output_var_names)
     names = self._model.get_output_var_names()
-    return (0, np.array(names, dtype=str)
+    return (0, np.array(names, dtype=str))
 # DO-NOT-DELETE splicer.end(get_output_var_names)
 
   def get_var_type(self, name):
