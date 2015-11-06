@@ -7,6 +7,7 @@ import sys
 import re
 import argparse
 import warnings
+import shutil
 
 import yaml
 
@@ -51,6 +52,8 @@ def main():
                         help='Get API info but do not build')
     parser.add_argument('--file', type=str, default=None,
                         help='Repos file')
+    parser.add_argument('--output', type=str, default=None,
+                        help='Copy metadata files to a folder')
 
     args = parser.parse_args()
 
@@ -62,6 +65,11 @@ def main():
                                        build_api=args.build_api)
 
     print(description, file=sys.stdout)
+
+    if args.output is not None:
+        for item in yaml.load(description)['bmi']:
+            dest_dir = os.path.join(args.output, item['name'])
+            shutil.copytree(item['path'], dest_dir)
 
 
 if __name__ == '__main__':
