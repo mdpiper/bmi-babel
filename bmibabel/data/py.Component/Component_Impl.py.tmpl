@@ -639,7 +639,7 @@ class Component:
     #
 
 # DO-NOT-DELETE splicer.begin(get_value)
-    dest[:] = self._model.get_value(name)
+    dest[:] = np.asarray(self._model.get_value(name)).flatten()
     return 0
 # DO-NOT-DELETE splicer.end(get_value)
 
