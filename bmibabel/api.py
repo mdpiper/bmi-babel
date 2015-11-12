@@ -17,7 +17,7 @@ _API_FILES = [os.path.join('.bmi', 'api.yaml'),
 
 _REQUIRED_KEYS = set(['language', ])
 _OPTIONAL_KEYS = set(['name', 'type', 'register', 'class', 'package',
-                      'libs', 'cflags', 'includes', 'build'])
+                      'libs', 'cflags', 'includes', 'build', 'path'])
 _VALID_KEYS = _REQUIRED_KEYS | _OPTIONAL_KEYS
 
 
@@ -102,7 +102,8 @@ def pkg_config(package, opt):
 
 def find_api_description_file(dir='.'):
     with cd(dir):
-        desc = yaml.load(read_first_of(['.bmi.yaml', '.bmi.yml']))
+        (_, contents) = read_first_of(['.bmi.yaml', '.bmi.yml'])
+        desc = yaml.load(contents)
         if 'implementation' in desc:
             if isinstance(desc['implementation'], dict):
                 return desc['implementation']
@@ -131,9 +132,11 @@ def load(dir='.'):
         If an api file cannot be read.
     """
     with cd(dir):
-        api = yaml.load(read_first_of([os.path.join('.bmi', 'api.yaml'),
-                                       os.path.join('.bmi', 'api.yml'),
-                                       'api.yaml', 'api.yml']))
+        (path_to_api, contents) = read_first_of(
+            [os.path.join('.bmi', 'api.yaml'),
+             os.path.join('.bmi', 'api.yml'), 'api.yaml', 'api.yml'])
+        api = yaml.load(contents)
+        api['path'] = os.path.dirname(path_to_api)
 
     validate_api(api)
 
@@ -168,10 +171,11 @@ def load_all(dir='.'):
     """
     with cd(dir):
         try:
-            bmi = yaml.load(read_first_of(['.bmi.yaml', '.bmi.yml']))
+            (_, contents) = read_first_of(['.bmi.yaml', '.bmi.yml'])
         except MissingFileError:
             apis = [load()]
         else:
+            bmi = yaml.load(contents)
             apis = [load(dir=path) for path in bmi['bmi_paths']]
 
     return apis
