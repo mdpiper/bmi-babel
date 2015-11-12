@@ -722,7 +722,7 @@ impl_c_Component_get_var_units(
 
     BMI_Model * model = GET_BMI_MODEL(self);
     *units = (char*) malloc(sizeof(char) * 2048);
-    model->get_var_units(model->self, name, *units);
+    status = model->get_var_units(model->self, name, *units);
     if (status != 0)
         free(*units);
     return status;
