@@ -22,7 +22,7 @@ package csdms version 0.0 {
             bool initialize(in string config_file);	            	
             bool update();	            	
             bool update_until(in double time_interval);	            	
-            bool finalize();	            	
+            bool finish();  // can't override gov.llnl.sidl.BaseClass#finalize()
             
             int get_start_time(out double time);
             int get_current_time(out double time);
