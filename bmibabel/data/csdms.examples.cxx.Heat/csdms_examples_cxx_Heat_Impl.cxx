@@ -180,16 +180,16 @@ csdms::examples::cxx::Heat_impl::update_impl (
 }
 
 /**
- * Method:  finalize[]
+ * Method:  finish[]
  */
 bool
-csdms::examples::cxx::Heat_impl::finalize_impl () 
+csdms::examples::cxx::Heat_impl::finish_impl () 
 
 {
-  // DO-NOT-DELETE splicer.begin(csdms.examples.cxx.Heat.finalize)
+  // DO-NOT-DELETE splicer.begin(csdms.examples.cxx.Heat.finish)
   CALL_BMI_VOID(Finalize);
   return 0;
-  // DO-NOT-DELETE splicer.end(csdms.examples.cxx.Heat.finalize)
+  // DO-NOT-DELETE splicer.end(csdms.examples.cxx.Heat.finish)
 }
 
 /**

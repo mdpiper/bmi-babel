@@ -141,7 +141,7 @@ namespace csdms {
          * user defined non-static method.
          */
         bool
-        finalize_impl() ;
+        finish_impl() ;
         /**
          * user defined non-static method.
          */

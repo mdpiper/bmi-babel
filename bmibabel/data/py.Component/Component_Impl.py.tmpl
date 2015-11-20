@@ -126,17 +126,17 @@ class Component:
     return 0
 # DO-NOT-DELETE splicer.end(update_until)
 
-  def finalize(self):
+  def finish(self):
     #
     # sidl EXPECTED RETURN VALUE(s)
     # =============================
     # bool _return
     #
 
-# DO-NOT-DELETE splicer.begin(finalize)
+# DO-NOT-DELETE splicer.begin(finish)
     self._model.finalize()
     return 0
-# DO-NOT-DELETE splicer.end(finalize)
+# DO-NOT-DELETE splicer.end(finish)
 
   def get_start_time(self):
     #

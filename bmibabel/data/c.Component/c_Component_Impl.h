@@ -124,7 +124,7 @@ impl_c_Component_update(
 
 extern
 sidl_bool
-impl_c_Component_finalize(
+impl_c_Component_finish(
   /* in */ c_Component self,
   /* out */ sidl_BaseInterface *_ex);
 

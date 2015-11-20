@@ -320,26 +320,26 @@ impl_c_Component_update_until(
 
 
 /*
- * Method:  finalize[]
+ * Method:  finish[]
  */
 
 #undef __FUNC__
-#define __FUNC__ "impl_c_Component_finalize"
+#define __FUNC__ "impl_c_Component_finish"
 
 #ifdef __cplusplus
 extern "C"
 #endif
 sidl_bool
-impl_c_Component_finalize(
+impl_c_Component_finish(
   /* in */ c_Component self,
   /* out */ sidl_BaseInterface *_ex)
 {
   *_ex = 0;
   {
-    /* DO-NOT-DELETE splicer.begin(c.Component.finalize) */
+    /* DO-NOT-DELETE splicer.begin(c.Component.finish) */
     BMI_Model * model = GET_BMI_MODEL(self);
     return model->finalize(model->self);
-    /* DO-NOT-DELETE splicer.end(c.Component.finalize) */
+    /* DO-NOT-DELETE splicer.end(c.Component.finish) */
   }
 }
 
