@@ -18,6 +18,7 @@ _PATH_TO_IMPL = {
     'cxx': os.path.join(_THIS_DIR, 'data', 'csdms.examples.cxx.Heat'),
     'f90': os.path.join(_THIS_DIR, 'data', 'csdms.examples.f90.Heat'),
     'python': os.path.join(_THIS_DIR, 'data', 'py.Component'),
+    'java': os.path.join(_THIS_DIR, 'data', 'csdms.JavaComponent'),
 }
 
 _PATH_TO_SIDL = os.path.join(_THIS_DIR, 'data')
@@ -323,6 +324,36 @@ def replace_c_class_names(paths, src, dest, inplace=True):
             file_like.write(contents)
 
 
+def replace_java_class_names(paths, src, dest, inplace=True):
+    """Replace Java class names in impl files.
+
+    Parameters
+    ----------
+    paths : iterable
+        Path to impl files.
+    src : str
+        Name of source class.
+    dest : str
+        Name of destination class.
+    inplace : boolean, optional
+        Make substitutions in-place.
+    """
+    src_with_underscores = re.sub(r'\.', '_', src)
+    dest_with_underscores = re.sub(r'\.', '_', dest)
+    subs = (
+        (src_with_underscores, dest_with_underscores),
+        (src, dest),
+    )
+
+    for path in paths:
+        contents = substitute_patterns_in_file(subs, path)
+        if not inplace:
+            path = re.sub(src_with_underscores, dest_with_underscores,
+                          os.path.basename(path))
+        with open(path, 'w') as file_like:
+            file_like.write(contents)
+
+
 def replace_py_class_names(paths, src, dest, inplace=True):
     """Replace Python class names in impl files.
 
@@ -457,6 +488,38 @@ def dup_c_impl(path, new, destdir='.'):
     return os.path.join(destdir, new)
 
 
+def dup_java_impl(path, new, destdir='.'):
+    """Duplicate Java implementation files.
+
+    Parameters
+    ----------
+    path : str
+        Path to directory containing source impl files.
+    new : str
+        Full name of new class, including package name.
+    destdir : str, optional
+        Path to directory to put duplicated impl files.
+
+    Returns
+    -------
+    str
+        Path to new implementation files.
+    """
+    old = path.split(os.extsep)[-1]
+    (package_name, class_name) = new.split(os.extsep)
+
+    impl_files = (glob.glob(os.path.join(path, package_name, '*.java')) +
+                  glob.glob(os.path.join(path, 'make.*.user')))
+
+    with cd(os.path.join(destdir, new)) as _:
+        replace_java_class_names(impl_files, old, class_name, inplace=False)
+        os.mkdir(package_name)
+        for file in glob.glob('*.java'):
+            shutil.move(file, package_name)
+
+    return os.path.join(destdir, new)
+
+
 def dup_py_impl(path, new, destdir='.'):
     """Duplicate Python implementation files.
 
@@ -525,7 +588,7 @@ def dup_impl_files(path, new, destdir='.', language=None):
         Name of new class.
     destdir : str, optional
         Path to directory to put duplicated impl files.
-    language : {'c', 'cxx', 'python'}, optional
+    language : {'c', 'cxx', 'java', 'python'}, optional
         Language of the implementation.
 
     Returns
@@ -539,6 +602,8 @@ def dup_impl_files(path, new, destdir='.', language=None):
         return dup_c_impl(path, new, destdir=destdir)
     elif language == 'cxx':
         return dup_cxx_impl(path, new, destdir=destdir)
+    elif language == 'java':
+        return dup_java_impl(path, new, destdir=destdir)
     elif language == 'python':
         return dup_py_impl(path, new, destdir=destdir)
     else:
